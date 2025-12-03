@@ -1,29 +1,13 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Home
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="container py-4">
-    <h2 class="mb-3">Semua Produk</h2>
-
-    <div class="row">
-        @forelse($products as $product)
-            <div class="col-md-3 mb-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $product->name }}</h5>
-                        <p class="mb-1">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-                        <small class="text-muted">
-                            {{ $product->category->name ?? '-' }}
-                        </small>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <p>Belum ada produk.</p>
-        @endforelse
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Konten halaman -->
+        </div>
     </div>
-
-    <div class="mt-3">
-        {{ $products->links() }}
-    </div>
-</div>
-@endsection
+</x-app-layout>

@@ -10,10 +10,12 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\StoreVerificationController;
 use App\Http\Controllers\Admin\WithdrawalController;  
 
+// Home (Buyer)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
@@ -28,12 +30,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/stores/{store}', [StoreVerificationController::class, 'show'])->name('stores.show');
     Route::delete('/stores/{store}', [StoreVerificationController::class, 'destroy'])->name('stores.delete');
     
-    // Withdrawal Management - YANG BARU INI
+    // Withdrawal Management
     Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals');
     Route::post('/withdrawals/{withdrawal}/status', [WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
-    
 });
 
+// Seller routes
+Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(function () {
+    Route::get('/dashboard', [SellerController::class, 'dashboard'])->name('dashboard');
+});
+
+// Profile routes (authenticated users)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
