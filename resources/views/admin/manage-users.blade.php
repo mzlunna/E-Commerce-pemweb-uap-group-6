@@ -5,11 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola User - Admin</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+<style>
+    :root {
+        --lunpia-orange: #F4A261;
+        --lunpia-red: #E76F51;
+        --lunpia-peach: #FFDAC1;
+        --lunpia-brown: #8D6E63;
+        --lunpia-cream: #FFF9F4;
+        --lunpia-yellow: #f5d99a;
+    }
+</style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-[var(--lunpia-cream)]">
+
     
     <!-- Navbar -->
-    <nav class="bg-white shadow-md">
+     <nav class="bg-[var(--lunpia-yellow)] shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-red-600">👨‍💼 Admin Panel</h1>

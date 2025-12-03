@@ -5,11 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Withdrawal</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+    :root {
+        --lunpia-orange: #F4A261;
+        --lunpia-red: #E76F51;
+        --lunpia-peach: #FFDAC1;
+        --lunpia-brown: #8D6E63;
+        --lunpia-cream: #FFF9F4;
+        --lunpia-yellow: #f5d99a;
+    }
+</style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-[var(--lunpia-cream)]">
     
     <!-- Navbar -->
-    <nav class="bg-white shadow-md">
+     <nav class="bg-[var(--lunpia-yellow)] shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-red-600">👨‍💼 Admin Panel</h1>
@@ -44,7 +54,7 @@
         <!-- Withdrawals Table -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <table class="min-w-full">
-                <thead class="bg-gray-50">
+                <thead class="bg-yellow-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Toko</th>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Pemilik</th>
