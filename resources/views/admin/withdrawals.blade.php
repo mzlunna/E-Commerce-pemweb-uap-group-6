@@ -30,6 +30,8 @@
                     <a href="{{ route('admin.store-verification') }}" class="text-gray-700">Verifikasi Toko</a>
                     <a href="{{ route('admin.withdrawals') }}" class="text-gray-900 font-bold">Withdrawal</a>
                     
+                    
+                    <span class="text-gray-700">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-red-600">Logout</button>
