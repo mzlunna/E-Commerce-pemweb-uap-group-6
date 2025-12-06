@@ -1,4 +1,29 @@
-@import "./dashboard.css";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Navbar Header Custom */
+.navbar-header-custom {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.navbar-brand-custom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #304674 !important;
+    text-decoration: none;
+}
+
+.navbar-brand-custom i {
+    font-size: 28px;
+    color: #304674;
+}
+
+.navbar-brand-custom:hover {
+    color: #98bad5 !important;
+}
+.navbar-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}

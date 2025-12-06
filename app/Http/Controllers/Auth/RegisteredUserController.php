@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// FILE 2: app/Http/Controllers/Auth/RegisteredUserController.php
+// EDIT METHOD store() - Set default role & redirect
+// ============================================
 
 namespace App\Http\Controllers\Auth;
 
@@ -14,19 +18,11 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -39,12 +35,13 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'member', // ✅ DEFAULT ROLE
         ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // ✅ REDIRECT KE BUYER
+        return redirect()->route('buyer.home');
     }
 }
