@@ -19,43 +19,6 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminProductController;
 
 
-<<<<<<< HEAD
-// Home (Buyer)
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Admin routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Manage Users
-    Route::get('/users', [AdminController::class, 'manageUsers'])->name('users');
-    Route::put('/users/{user}/role', [AdminController::class, 'updateUserRole'])->name('users.update-role');
-    Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
-    
-    // Store Verification
-    Route::get('/stores', [StoreVerificationController::class, 'index'])->name('store-verification');
-    Route::post('/stores/{store}/verify', [StoreVerificationController::class, 'verify'])->name('stores.verify');
-    Route::get('/stores/{store}', [StoreVerificationController::class, 'show'])->name('stores.show');
-    Route::delete('/stores/{store}', [StoreVerificationController::class, 'destroy'])->name('stores.delete');
-    
-    // Withdrawal Management
-    Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals');
-    Route::post('/withdrawals/{withdrawal}/status', [WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
-});
-
-// Seller routes
-Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(function () {
-    Route::get('/dashboard', [SellerController::class, 'dashboard'])->name('dashboard');
-});
-
-// Profile routes (authenticated users)
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-=======
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
@@ -147,25 +110,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ADMIN ROUTES
     // ============================================
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        // Dashboard
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        
-        // Store Approvals
-        Route::get('/stores', [AdminStoreApprovalController::class, 'index'])->name('stores.index');
-        Route::get('/stores/{id}', [AdminStoreApprovalController::class, 'show'])->name('stores.show');
-        Route::post('/stores/{id}/approve', [AdminStoreApprovalController::class, 'approve'])->name('stores.approve');
-        Route::post('/stores/{id}/reject', [AdminStoreApprovalController::class, 'reject'])->name('stores.reject');
-        
-        // Users
-        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-        Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
-        Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-        
-        // Products
-        Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
-        Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
-    });
->>>>>>> viaa
+
+    // Dashboard
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // Users
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
+    Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+    Route::patch('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+
+    // Stores
+    Route::get('/stores', [AdminStoreApprovalController::class, 'index'])->name('stores.index');
+    Route::get('/stores/{id}', [AdminStoreApprovalController::class, 'show'])->name('stores.show');
+    Route::post('/stores/{id}/approve', [AdminStoreApprovalController::class, 'approve'])->name('stores.approve');
+    Route::post('/stores/{id}/reject', [AdminStoreApprovalController::class, 'reject'])->name('stores.reject');
+
+    // Products
+    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+    Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+});
+
 });
 
 // Auth routes

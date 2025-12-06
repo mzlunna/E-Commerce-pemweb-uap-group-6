@@ -26,19 +26,6 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-<<<<<<< HEAD
-        $user = Auth::user();
-
-        // Redirect berdasarkan role
-        if ($user->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard'));
-        } elseif ($user->role === 'seller') {
-            return redirect()->intended(route('seller.dashboard'));
-        } else { // buyer
-            return redirect()->intended(route('home'));
-        }
-    } 
-=======
         // ✅ REDIRECT BY ROLE
         $user = auth()->user();
         
@@ -59,18 +46,12 @@ class AuthenticatedSessionController extends Controller
         // Default: Buyer
         return redirect()->intended(route('buyer.home'));
     }
->>>>>>> viaa
 
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-<<<<<<< HEAD
-
-        return redirect('/login');
-=======
         return redirect('/');
->>>>>>> viaa
     }
 }

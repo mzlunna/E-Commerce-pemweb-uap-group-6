@@ -10,29 +10,35 @@ class RoleMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        // Check if user is authenticated
+        // Jika belum login
         if (!auth()->check()) {
             return redirect()->route('login');
         }
 
-        // Check if user's role is in allowed roles
-        if (in_array(auth()->user()->role, $roles)) {
+        $user = auth()->user();
+        $userRole = $user->role;
+
+        // Jika role cocok → lanjut
+        if (in_array($userRole, $roles)) {
             return $next($request);
         }
 
-        // Redirect to appropriate dashboard based on role
-        $user = auth()->user();
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'seller') {
-            return redirect()->route('seller.dashboard');
-        } else {
-            return redirect()->route('buyer.dashboard');
+        /**
+         * FIX PENTING:
+         * Jangan pakai redirect()->route() karena menyebabkan middleware dipanggil ulang → infinite loop.
+         * Pakai URL langsung saja.
+         */
+
+        switch ($userRole) {
+            case 'admin':
+                return redirect('/admin/dashboard');
+            case 'seller':
+                return redirect('/seller/dashboard');
+            default:
+                return redirect('/buyer/dashboard');
         }
     }
 }

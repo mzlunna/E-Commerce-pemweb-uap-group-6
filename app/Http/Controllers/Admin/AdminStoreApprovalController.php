@@ -10,37 +10,37 @@ class AdminStoreApprovalController extends Controller
 {
     public function index()
     {
-        $stores = Store::with('user')
-            ->latest()
-            ->paginate(10);
-
+        $stores = Store::with('user')->paginate(15);
         return view('admin.stores.index', compact('stores'));
     }
 
     public function show($id)
     {
-        $store = Store::with('user')->findOrFail($id);
+        $store = Store::with(['user', 'products'])->findOrFail($id);
         return view('admin.stores.show', compact('store'));
     }
 
     public function approve($id)
     {
         $store = Store::findOrFail($id);
-        $store->status = 'approved';
-        $store->save();
+        $store->update(['status' => 'approved']);
 
-        return redirect()->route('admin.stores.index')
-            ->with('success', 'Toko berhasil disetujui!');
+        return back()->with('success', 'Store approved successfully');
     }
 
     public function reject(Request $request, $id)
     {
         $store = Store::findOrFail($id);
-        $store->status = 'rejected';
-        $store->rejection_reason = $request->reason;
-        $store->save();
+        
+        $validated = $request->validate([
+            'rejection_reason' => 'required|string|max:500',
+        ]);
 
-        return redirect()->route('admin.stores.index')
-            ->with('success', 'Toko ditolak!');
+        $store->update([
+            'status' => 'rejected',
+            'rejection_reason' => $validated['rejection_reason'],
+        ]);
+
+        return back()->with('success', 'Store rejected');
     }
 }
