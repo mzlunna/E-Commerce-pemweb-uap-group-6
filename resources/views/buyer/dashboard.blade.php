@@ -4,7 +4,7 @@
 
 @section('styles')
     @vite(['resources/css/dashboard-buyer.css'])
-@endsection
+@endsection,
 
 @section('content')
 <div class="buyer-container">

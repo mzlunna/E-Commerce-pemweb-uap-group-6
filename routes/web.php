@@ -107,31 +107,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ============================================
     // ADMIN ROUTES
     // ============================================
-<<<<<<< HEAD
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    // Dashboard
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
-    // Users
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
-    Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-    Route::patch('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-
-    // Stores
-    Route::get('/stores', [AdminStoreApprovalController::class, 'index'])->name('stores.index');
-    Route::get('/stores/{id}', [AdminStoreApprovalController::class, 'show'])->name('stores.show');
-    Route::post('/stores/{id}/approve', [AdminStoreApprovalController::class, 'approve'])->name('stores.approve');
-    Route::post('/stores/{id}/reject', [AdminStoreApprovalController::class, 'reject'])->name('stores.reject');
-
-    // Products
-    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
-    Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
-});
-
-=======
     Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
         // Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -145,13 +120,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Users
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
+        Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
         
         // Products
         Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
         Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
     });
->>>>>>> 28b684196880c0f36d8bf662fad0133f74cd8c72
 });
 
 // Auth routes
