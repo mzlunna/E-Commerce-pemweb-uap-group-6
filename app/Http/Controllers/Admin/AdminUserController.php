@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -7,14 +8,19 @@ use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
 {
+    /**
+     * Display a listing of all users with their stores.
+     */
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::with('store')->latest();
 
+        // Filter by role
         if ($request->filled('role')) {
             $query->where('role', $request->role);
         }
 
+        // Search by name or email
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
@@ -22,40 +28,72 @@ class AdminUserController extends Controller
             });
         }
 
-        $users = $query->latest()->paginate(15);
+        $users = $query->paginate(20);
 
         return view('admin.users.index', compact('users'));
     }
 
-    public function show($id)
+    /**
+     * Display the specified user with store details.
+     */
+    public function show(User $user)
     {
-        $user = User::with('store')->findOrFail($id);
+        // Load store relationship
+        $user->load('store');
+        
+        // Only load store details if user has a store
+        if ($user->store) {
+            $user->store->loadCount('products')
+                        ->load('storeBalance');
+        }
+
         return view('admin.users.show', compact('user'));
     }
 
-        public function edit($id) {
+    /**
+     * Show the form for editing the specified user.
+     */
+    public function edit($id)
+    {
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
-    public function update(Request $request, $id) {
-        $user = User::findOrFail($id);
-        // validasi update
-        $user->update($request->all());
-        return redirect()->route('admin.users.index')->with('success', 'User updated!');
+    /**
+     * Update the specified user.
+     */
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'role' => 'sometimes|in:admin,member',
+        ]);
+
+        $user->update($validated);
+
+        return redirect()->route('admin.users.show', $user)
+                       ->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-
-    public function destroy($id)
+    /**
+     * Remove the specified user from storage.
+     */
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
-        
+        // Prevent deleting self
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        // Prevent deleting admin
         if ($user->role === 'admin') {
             return back()->with('error', 'Tidak bisa hapus admin!');
         }
 
         $user->delete();
+
         return redirect()->route('admin.users.index')
-            ->with('success', 'User berhasil dihapus!');
+                       ->with('success', 'Pengguna berhasil dihapus.');
     }
 }

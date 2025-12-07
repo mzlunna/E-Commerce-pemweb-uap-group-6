@@ -5,14 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminWithdrawalController extends Controller
 {
     /**
      * Display a listing of all withdrawal requests.
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -31,9 +29,6 @@ class AdminWithdrawalController extends Controller
 
     /**
      * Display the specified withdrawal.
-     * 
-     * @param  \App\Models\Withdrawal  $withdrawal
-     * @return \Illuminate\View\View
      */
     public function show(Withdrawal $withdrawal)
     {
@@ -44,9 +39,6 @@ class AdminWithdrawalController extends Controller
 
     /**
      * Approve a withdrawal request.
-     * 
-     * @param  \App\Models\Withdrawal  $withdrawal
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function approve(Withdrawal $withdrawal)
     {
@@ -55,8 +47,10 @@ class AdminWithdrawalController extends Controller
         }
 
         // Wrap in transaction for safety
-        \Illuminate\Support\Facades\DB::transaction(function () use ($withdrawal) {
-            $lockedWithdrawal = \App\Models\Withdrawal::where('id', $withdrawal->id)->lockForUpdate()->first();
+        DB::transaction(function () use ($withdrawal) {
+            $lockedWithdrawal = Withdrawal::where('id', $withdrawal->id)
+                                         ->lockForUpdate()
+                                         ->first();
 
             if ($lockedWithdrawal && $lockedWithdrawal->status === 'pending') {
                 $lockedWithdrawal->update(['status' => 'approved']);
@@ -69,9 +63,6 @@ class AdminWithdrawalController extends Controller
 
     /**
      * Reject a withdrawal request.
-     * 
-     * @param  \App\Models\Withdrawal  $withdrawal
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function reject(Withdrawal $withdrawal)
     {
@@ -80,9 +71,11 @@ class AdminWithdrawalController extends Controller
         }
 
         // Refund balance and reject in transaction
-        \Illuminate\Support\Facades\DB::transaction(function () use ($withdrawal) {
+        DB::transaction(function () use ($withdrawal) {
             // Lock record
-            $lockedWithdrawal = \App\Models\Withdrawal::where('id', $withdrawal->id)->lockForUpdate()->first();
+            $lockedWithdrawal = Withdrawal::where('id', $withdrawal->id)
+                                         ->lockForUpdate()
+                                         ->first();
 
             if ($lockedWithdrawal && $lockedWithdrawal->status === 'pending') {
                 $lockedWithdrawal->storeBalance->increment('balance', $lockedWithdrawal->amount);
