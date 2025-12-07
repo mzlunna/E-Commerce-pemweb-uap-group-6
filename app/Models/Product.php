@@ -6,42 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-
     protected $fillable = [
         'store_id',
-        'product_category_id',
+        'category_id',
         'name',
-        'slug',
         'description',
-        'condition',
         'price',
-        'weight',
         'stock',
-    ];
-
-    protected $casts = [
-        'price' => 'decimal:2',
+        'weight'
     ];
 
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
-    public function productCategory()
-    {
-        return $this->belongsTo(ProductCategory::class);
-    }
 
-    public function productImages()
+    public function images()
     {
         return $this->hasMany(ProductImage::class);
     }
 
-    public function transactionDetails()
+    public function category()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->belongsTo(ProductCategory::class, 'category_id');
     }
-    public function productReviews()
+
+    public function reviews()
     {
         return $this->hasMany(ProductReview::class);
     }

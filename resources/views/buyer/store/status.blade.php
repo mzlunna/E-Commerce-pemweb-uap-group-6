@@ -1,5 +1,5 @@
 <!-- buyer/store/status.blade.php -->
-@extends('layouts.app')
+@extends('layouts.buyer')
 @section('title', 'Status Toko - ELSHOP')
 @section('content')
 <div class="container mt-5">

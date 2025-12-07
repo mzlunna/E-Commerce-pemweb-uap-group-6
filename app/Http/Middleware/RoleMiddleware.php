@@ -13,32 +13,33 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        // Jika belum login
-        if (!auth()->check()) {
+        $user = auth()->user();
+
+        if (!$user) {
             return redirect()->route('login');
         }
 
-        $user = auth()->user();
-        $userRole = $user->role;
-
-        // Jika role cocok → lanjut
-        if (in_array($userRole, $roles)) {
+        // Admin check
+        if (in_array('admin', $roles) && $user->role === 'admin') {
             return $next($request);
         }
 
-        /**
-         * FIX PENTING:
-         * Jangan pakai redirect()->route() karena menyebabkan middleware dipanggil ulang → infinite loop.
-         * Pakai URL langsung saja.
-         */
-
-        switch ($userRole) {
-            case 'admin':
-                return redirect('/admin/dashboard');
-            case 'seller':
-                return redirect('/seller/dashboard');
-            default:
-                return redirect('/buyer/dashboard');
+        // Seller check (member dengan toko verified)
+        if (in_array('seller', $roles)) {
+            $store = \App\Models\Store::where('user_id', $user->id)
+                ->where('is_verified', 1)
+                ->first();
+            
+            if ($store) {
+                return $next($request);
+            }
         }
+
+        // Member check
+        if (in_array('member', $roles) && $user->role === 'member') {
+            return $next($request);
+        }
+
+        abort(403, 'Unauthorized action.');
     }
 }

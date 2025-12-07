@@ -9,7 +9,8 @@ class BuyerOrderController extends Controller
 {
     public function index()
     {
-        $orders = Transaction::where('user_id', auth()->id())
+        // Mengambil pesanan berdasarkan buyer_id, bukan user_id
+        $orders = Transaction::where('buyer_id', auth()->id()) // Ganti user_id dengan buyer_id
             ->with('details.product.images')
             ->latest()
             ->paginate(10);
@@ -19,7 +20,8 @@ class BuyerOrderController extends Controller
 
     public function show($id)
     {
-        $order = Transaction::where('user_id', auth()->id())
+        // Mengambil detail pesanan berdasarkan buyer_id
+        $order = Transaction::where('buyer_id', auth()->id()) // Ganti user_id dengan buyer_id
             ->with('details.product.images')
             ->findOrFail($id);
 

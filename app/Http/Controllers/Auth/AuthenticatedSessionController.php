@@ -1,10 +1,5 @@
 <?php
 
-// ============================================
-// FILE 1: app/Http/Controllers/Auth/AuthenticatedSessionController.php
-// EDIT METHOD store() - Tambahkan redirect by role
-// ============================================
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -16,17 +11,23 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    /**
+     * Display the login view.
+     */
     public function create(): View
     {
         return view('auth.login');
     }
 
+    /**
+     * Handle an incoming authentication request.
+     */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
+
         $request->session()->regenerate();
 
-        // ✅ REDIRECT BY ROLE
         $user = auth()->user();
         
         // Admin
@@ -34,9 +35,9 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('admin.dashboard'));
         }
         
-        // Seller (member dengan toko approved)
+        // Seller (member dengan toko verified)
         $store = \App\Models\Store::where('user_id', $user->id)
-            ->where('status', 'approved')
+            ->where('is_verified', 1)
             ->first();
         
         if ($store) {
@@ -44,14 +45,20 @@ class AuthenticatedSessionController extends Controller
         }
         
         // Default: Buyer
-        return redirect()->intended(route('buyer.home'));
+        return redirect()->intended(route('buyer.dashboard'));
     }
 
+    /**
+     * Destroy an authenticated session.
+     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
+
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 }

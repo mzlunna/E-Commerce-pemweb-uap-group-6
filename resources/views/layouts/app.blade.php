@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'ELSHOP - Marketplace Snack Premium')</title>
-
+    
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- Header Footer CSS -->
+    
+    <!-- Vite CSS -->
     @vite(['resources/css/app.css', 'resources/css/header_footer.css'])
-
     @yield('styles')
 </head>
 <body>
-    <!-- HEADER TOP (bersih tanpa Pesanan Saya) -->
+    <!-- Header Top -->
     <div class="header-top">
         <div class="container-fluid" style="max-width: 1200px;">
             <div class="header-top-content">
@@ -35,12 +34,20 @@
                             <i class="fas fa-user-plus"></i> Daftar
                         </a>
                     @endguest
+                    @auth
+                        <a href="{{ route('buyer.orders.index') }}">
+                            <i class="fas fa-box"></i> Pesanan Saya
+                        </a>
+                        <a href="{{ route('buyer.profile.edit') }}">
+                            <i class="fas fa-user"></i> {{ auth()->user()->name }}
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- HEADER MAIN -->
+    <!-- Header Main -->
     <header class="header-main">
         <div class="container-fluid" style="max-width: 1200px;">
             <div class="header-content">
@@ -62,7 +69,7 @@
                 </div>
                 @endauth
 
-                <!-- HEADER ICONS -->
+                <!-- Header Icons -->
                 <div class="header-icons">
                     @auth
                         @php
@@ -73,6 +80,7 @@
                         @endphp
 
                         @if($user->role === 'member' && !$hasStore)
+                            <!-- Member (Buyer) Icons -->
                             <a href="{{ route('buyer.cart.index') }}" class="icon-link">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span>Keranjang</span>
@@ -82,6 +90,7 @@
                                 <span>Pesanan</span>
                             </a>
                         @elseif($hasStore)
+                            <!-- Seller Icons -->
                             <a href="{{ route('seller.dashboard') }}" class="icon-link">
                                 <i class="fas fa-store"></i>
                                 <span>Toko Saya</span>
@@ -91,6 +100,7 @@
                                 <span>Pesanan</span>
                             </a>
                         @elseif($user->role === 'admin')
+                            <!-- Admin Icons -->
                             <a href="{{ route('admin.stores.index') }}" class="icon-link">
                                 <i class="fas fa-store-alt"></i>
                                 <span>Toko</span>
@@ -101,55 +111,24 @@
                             </a>
                         @endif
 
-                        <!-- PROFILE DROPDOWN (bersih, tanpa Pesanan Saya) -->
-                        <div class="profile-dropdown" id="profileDropdown">
-                            <div class="profile-trigger">
-                                <i class="fas fa-user-circle"></i>
-                                <span>{{ Str::limit(auth()->user()->name, 10) }}</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-
-                            <div class="profile-menu">
-                                <div class="profile-menu-header">
-                                    <div class="user-name">{{ auth()->user()->name }}</div>
-                                    <div class="user-email">{{ auth()->user()->email }}</div>
-                                </div>
-
-                                <div class="profile-menu-items">
-                                    <a href="{{ route('buyer.profile.edit') }}" class="profile-menu-item">
-                                        <i class="fas fa-user-edit"></i>
-                                        <span>Edit Profile</span>
-                                    </a>
-
-                                    @if($user->role === 'member' && !$hasStore)
-                                    <a href="{{ route('buyer.store.apply') }}" class="profile-menu-item">
-                                        <i class="fas fa-store"></i>
-                                        <span>Daftar Jadi Seller</span>
-                                    </a>
-                                    @endif
-
-                                    <div class="profile-menu-divider"></div>
-
-                                    <form action="{{ route('logout') }}" method="POST" id="logoutForm">
-                                        @csrf
-                                        <a href="#" class="profile-menu-item logout" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
-                                            <i class="fas fa-sign-out-alt"></i>
-                                            <span>Logout</span>
-                                        </a>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Logout -->
+                        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="icon-link" style="background:none;border:none;cursor:pointer;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
                     @endauth
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="dropdown-overlay" id="dropdownOverlay"></div>
-
+    <!-- Main Content -->
     <main style="min-height: calc(100vh - 200px); padding: 20px 0;">
         <div class="container-fluid" style="max-width: 1200px;">
+            <!-- Flash Messages -->
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
@@ -172,9 +151,11 @@
         </div>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container-fluid" style="max-width: 1200px;">
             <div class="footer-content">
+                <!-- Column 1 -->
                 <div class="footer-column">
                     <h4>ELSHOP</h4>
                     <p>Marketplace snack premium terpercaya di Indonesia.</p>
@@ -186,6 +167,7 @@
                     </div>
                 </div>
 
+                <!-- Column 2 -->
                 <div class="footer-column">
                     <h4>Belanja</h4>
                     <a href="{{ route('buyer.dashboard') }}">Semua Produk</a>
@@ -193,6 +175,7 @@
                     <a href="{{ route('buyer.orders.index') }}">Pesanan Saya</a>
                 </div>
 
+                <!-- Column 3 -->
                 <div class="footer-column">
                     <h4>Jual</h4>
                     @auth
@@ -204,6 +187,7 @@
                     <a href="#">Tips & Trik Jualan</a>
                 </div>
 
+                <!-- Column 4 -->
                 <div class="footer-column">
                     <h4>Bantuan</h4>
                     <a href="#">Pusat Bantuan</a>
@@ -223,8 +207,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
-    @vite(['resources/js/buyer.js'])
 
     @yield('scripts')
 </body>

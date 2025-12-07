@@ -21,9 +21,7 @@ class BuyerDashboardController extends Controller
 
         // Filter by category
         if ($request->filled('category')) {
-            $query->whereHas('categories', function($q) use ($request) {
-                $q->where('product_categories.id', $request->category);
-            });
+            $query->where('category_id', $request->category);
         }
 
         // Filter by price

@@ -193,8 +193,11 @@ body {
     .register-card,
     .login-card,
     .auth-card {
+        width: 100%;       /* FIX utama */
+        max-width: 360px;  /* aman untuk HP kecil */
         padding: 30px 20px;
     }
+
 
     .register-card h2,
     .login-card h2,

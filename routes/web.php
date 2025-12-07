@@ -18,14 +18,12 @@ use App\Http\Controllers\Admin\AdminStoreApprovalController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminProductController;
 
-
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
     }
     return redirect()->route('login');
 });
-
 
 Route::middleware(['auth', 'verified'])->group(function () {
     
@@ -37,9 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return redirect()->route('admin.dashboard');
         }
         
-        // Seller (member dengan toko approved)
+        // Seller (member dengan toko verified)
         $store = \App\Models\Store::where('user_id', $user->id)
-            ->where('status', 'approved')
+            ->where('is_verified', 1)
             ->first();
         
         if ($store) {
@@ -53,8 +51,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ============================================
     // BUYER ROUTES
     // ============================================
-    Route::middleware(['role:member'])->prefix('buyer')->name('buyer.')->group(function () {
-        // Dashboard (bukan home)
+    Route::prefix('buyer')->name('buyer.')->middleware(['role:member'])->group(function () {
+        // Dashboard
         Route::get('/dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
         
         // Products
@@ -62,7 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/products/{id}', [BuyerProductController::class, 'show'])->name('products.show');
         
         // Cart
-        Route::get('/cart', [BuyerCartController::class, 'index'])->name('cart.index');
+        Route::get('/cart', [BuyerCartController::class, 'index'])->name('cart.index'); // Correct route
         Route::post('/cart/add', [BuyerCartController::class, 'add'])->name('cart.add');
         Route::patch('/cart/{id}', [BuyerCartController::class, 'update'])->name('cart.update');
         Route::delete('/cart/{id}', [BuyerCartController::class, 'destroy'])->name('cart.destroy');
@@ -88,7 +86,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ============================================
     // SELLER ROUTES
     // ============================================
-    Route::middleware(['seller'])->prefix('seller')->name('seller.')->group(function () {
+    Route::prefix('seller')->name('seller.')->middleware(['role:seller'])->group(function () {
         // Dashboard
         Route::get('/dashboard', [SellerDashboardController::class, 'index'])->name('dashboard');
         
@@ -109,6 +107,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ============================================
     // ADMIN ROUTES
     // ============================================
+<<<<<<< HEAD
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard
@@ -132,6 +131,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
 });
 
+=======
+    Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        
+        // Store Approvals
+        Route::get('/stores', [AdminStoreApprovalController::class, 'index'])->name('stores.index');
+        Route::get('/stores/{id}', [AdminStoreApprovalController::class, 'show'])->name('stores.show');
+        Route::post('/stores/{id}/approve', [AdminStoreApprovalController::class, 'approve'])->name('stores.approve');
+        Route::post('/stores/{id}/reject', [AdminStoreApprovalController::class, 'reject'])->name('stores.reject');
+        
+        // Users
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
+        Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        
+        // Products
+        Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+        Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+    });
+>>>>>>> 28b684196880c0f36d8bf662fad0133f74cd8c72
 });
 
 // Auth routes

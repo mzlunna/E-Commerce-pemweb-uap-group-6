@@ -1,5 +1,5 @@
 <!-- buyer/profile/edit.blade.php -->
-@extends('layouts.app')
+@extends('layouts.buyer')
 @section('title', 'Edit Profil - ELSHOP')
 @section('content')
 <div class="container mt-5">
