@@ -55,6 +55,14 @@ class AdminStoreController extends Controller
     }
 
     /**
+     * Approve a store registration (alias for verify).
+     */
+    public function approve($id)
+    {
+        return $this->verify($id);
+    }
+
+    /**
      * Verify (approve) a store registration.
      */
     public function verify($id)
@@ -74,7 +82,7 @@ class AdminStoreController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.stores.show', ['store' => $store->id])
+        return redirect()->route('admin.stores.show', ['id' => $store->id])
                        ->with('success', 'Toko berhasil diverifikasi.');
     }
 

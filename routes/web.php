@@ -14,9 +14,10 @@ use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Seller\SellerBalanceController;
 use App\Http\Controllers\Seller\SellerWithdrawController;
 use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminStoreApprovalController;
+use App\Http\Controllers\Admin\AdminStoreController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminWithdrawalController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -108,25 +109,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ADMIN ROUTES
     // ============================================
     Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
-        // Dashboard
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        
-        // Store Approvals
-        Route::get('/stores', [AdminStoreApprovalController::class, 'index'])->name('stores.index');
-        Route::get('/stores/{id}', [AdminStoreApprovalController::class, 'show'])->name('stores.show');
-        Route::post('/stores/{id}/approve', [AdminStoreApprovalController::class, 'approve'])->name('stores.approve');
-        Route::post('/stores/{id}/reject', [AdminStoreApprovalController::class, 'reject'])->name('stores.reject');
-        
-        // Users
-        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-        Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
-        Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-        
-        // Products
-        Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
-        Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+    
+    // Dashboard
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // Stores
+    Route::post('/stores/{id}/approve', [AdminStoreController::class, 'approve'])->name('stores.approve');
+    Route::post('/stores/{id}/verify', [AdminStoreController::class, 'verify'])->name('stores.verify');
+    Route::post('/stores/{id}/reject', [AdminStoreController::class, 'reject'])->name('stores.reject');
+    Route::post('/stores/{id}/restore', [AdminStoreController::class, 'restore'])->name('stores.restore');
+    Route::delete('/stores/{id}', [AdminStoreController::class, 'destroy'])->name('stores.destroy');
+    Route::get('/stores', [AdminStoreController::class, 'index'])->name('stores.index');
+    Route::get('/stores/{id}', [AdminStoreController::class, 'show'])->name('stores.show');
+    
+    // Users (self-delete MUST be first)
+    Route::get('/users/{id}/confirm-delete', [AdminUserController::class, 'confirmDelete'])->name('users.confirmDelete');
+    Route::delete('/users/{id}/destroy-self', [AdminUserController::class, 'destroySelf'])->name('users.destroySelf');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
+    Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    
+    // Orders
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/verify-payment', [AdminOrderController::class, 'verifyPayment'])->name('orders.verify-payment');
+    
+    // Withdrawals
+    Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
+    Route::get('/withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
+    Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');
+    Route::post('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');  
     });
 });
 

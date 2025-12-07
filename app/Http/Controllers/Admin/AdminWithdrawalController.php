@@ -14,8 +14,7 @@ class AdminWithdrawalController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Withdrawal::with(['storeBalance.store'])
-                          ->latest();
+        $query = Withdrawal::with(['storeBalance.store'])->latest();
 
         // Filter by status
         if ($request->filled('status')) {
@@ -30,8 +29,9 @@ class AdminWithdrawalController extends Controller
     /**
      * Display the specified withdrawal.
      */
-    public function show(Withdrawal $withdrawal)
+    public function show($id)
     {
+        $withdrawal = Withdrawal::findOrFail($id);
         $withdrawal->load('storeBalance.store.user');
 
         return view('admin.withdrawals.show', compact('withdrawal'));
@@ -40,8 +40,10 @@ class AdminWithdrawalController extends Controller
     /**
      * Approve a withdrawal request.
      */
-    public function approve(Withdrawal $withdrawal)
+    public function approve($id)
     {
+        $withdrawal = Withdrawal::findOrFail($id);
+
         if ($withdrawal->status !== 'pending') {
             return back()->with('error', 'Hanya penarikan yang berstatus pending yang dapat disetujui.');
         }
@@ -57,22 +59,23 @@ class AdminWithdrawalController extends Controller
             }
         });
 
-        return redirect()->route('admin.withdrawals.show', $withdrawal)
+        return redirect()->route('admin.withdrawals.show', $withdrawal->id)
                        ->with('success', 'Penarikan saldo berhasil disetujui.');
     }
 
     /**
      * Reject a withdrawal request.
      */
-    public function reject(Withdrawal $withdrawal)
+    public function reject($id)
     {
+        $withdrawal = Withdrawal::findOrFail($id);
+
         if ($withdrawal->status !== 'pending') {
             return back()->with('error', 'Hanya penarikan yang berstatus pending yang dapat ditolak.');
         }
 
         // Refund balance and reject in transaction
         DB::transaction(function () use ($withdrawal) {
-            // Lock record
             $lockedWithdrawal = Withdrawal::where('id', $withdrawal->id)
                                          ->lockForUpdate()
                                          ->first();
@@ -83,7 +86,7 @@ class AdminWithdrawalController extends Controller
             }
         });
 
-        return redirect()->route('admin.withdrawals.show', $withdrawal)
+        return redirect()->route('admin.withdrawals.show', $withdrawal->id)
                        ->with('success', 'Penarikan saldo ditolak dan dana telah dikembalikan ke toko.');
     }
 }

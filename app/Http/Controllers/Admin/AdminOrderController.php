@@ -9,21 +9,24 @@ use Illuminate\Support\Facades\DB;
 
 class AdminOrderController extends Controller
 {
+    /**
+     * Display a listing of all orders with filters.
+     */
     public function index(Request $request)
     {
-        $query = Transaction::with(['store', 'buyer.user'])->latest();
+        $query = Transaction::with(['store', 'user'])->latest();
 
-        // Filter status
+        // Filter by order status
         if ($request->filled('status')) {
             $query->where('order_status', $request->status);
         }
 
-        // Filter payment status
+        // Filter by payment status
         if ($request->filled('payment_status')) {
             $query->where('payment_status', $request->payment_status);
         }
 
-        // Filter order code
+        // Search by order code or store name
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('code', 'like', '%' . $request->search . '%')
@@ -38,14 +41,29 @@ class AdminOrderController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function show(Transaction $order)
+    /**
+     * Display the specified order with all details.
+     */
+    public function show($id)
     {
-        $order->load(['store', 'buyer.user', 'transactionDetails.product.productImages']);
+        $order = Transaction::findOrFail($id);
+        
+        $order->load([
+            'store', 
+            'user', 
+            'transactionDetails.product.productImages'
+        ]);
+
         return view('admin.orders.show', compact('order'));
     }
 
-    public function verifyPayment(Transaction $order)
+    /**
+     * Verify payment manually.
+     */
+    public function verifyPayment($id)
     {
+        $order = Transaction::findOrFail($id);
+
         if ($order->payment_status === 'paid') {
             return back()->with('error', 'Pembayaran pesanan ini sudah diverifikasi.');
         }

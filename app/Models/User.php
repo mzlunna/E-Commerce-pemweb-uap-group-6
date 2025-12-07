@@ -35,7 +35,7 @@ class User extends Authenticatable
     // Relationships
     public function store()
     {
-        return $this->hasOne(Store::class, 'owner_id');
+        return $this->hasOne(Store::class, 'user_id');
     }
 
     public function buyerTransactions()
