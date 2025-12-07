@@ -83,7 +83,7 @@ class AdminStoreController extends Controller
         }
 
         return redirect()->route('admin.stores.show', ['id' => $store->id])
-                       ->with('success', 'Toko berhasil diverifikasi.');
+        ->with('success', 'Toko berhasil diverifikasi.');
     }
 
     /**
@@ -100,7 +100,7 @@ class AdminStoreController extends Controller
         $store->delete();
 
         return redirect()->route('admin.stores.index')
-                       ->with('success', 'Pengajuan toko ditolak dan dihapus.');
+        ->with('success', 'Pengajuan toko ditolak dan dihapus.');
     }
 
     /**
@@ -112,7 +112,7 @@ class AdminStoreController extends Controller
         $store->delete();
 
         return redirect()->route('admin.stores.index')
-                       ->with('success', 'Toko berhasil dihapus.');
+        ->with('success', 'Toko berhasil dihapus.');
     }
 
     /**
@@ -124,6 +124,6 @@ class AdminStoreController extends Controller
         $store->restore();
 
         return redirect()->route('admin.stores.index')
-                       ->with('success', 'Toko berhasil dipulihkan.');
+        ->with('success', 'Toko berhasil dipulihkan.');
     }
 }

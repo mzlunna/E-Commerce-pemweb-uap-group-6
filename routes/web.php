@@ -123,6 +123,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/stores/{id}', [AdminStoreController::class, 'show'])->name('stores.show');
     
     // Users (self-delete MUST be first)
+    Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
     Route::get('/users/{id}/confirm-delete', [AdminUserController::class, 'confirmDelete'])->name('users.confirmDelete');
     Route::delete('/users/{id}/destroy-self', [AdminUserController::class, 'destroySelf'])->name('users.destroySelf');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
