@@ -2,34 +2,80 @@
 
 @section('content')
 <div class="flex items-center justify-center min-h-screen bg-[#d8e1e8] p-6">
-    <div class="w-full max-w-2xl bg-[#c6d3e3]/50 p-8 rounded-xl shadow-lg">
-        {{-- Judul --}}
-        <h1 class="text-3xl font-bold mb-6 text-[#304674] text-center">Detail User</h1>
+    <div class="w-full max-w-lg bg-[#c6d3e3]/50 p-8 rounded-xl shadow-lg">
 
-        {{-- Informasi User --}}
-        <div class="space-y-4">
-            <p class="text-lg text-[#304674]/90"><strong>Nama:</strong> {{ $user->name }}</p>
-            <p class="text-lg text-[#304674]/90"><strong>Email:</strong> {{ $user->email }}</p>
-            <p class="text-lg text-[#304674]/90"><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
+        <h2 class="text-3xl font-bold mb-6 text-[#304674] text-center">🏬 Detail Toko</h2>
+
+        {{-- LOGO TOKO --}}
+        <div class="flex justify-center mb-6">
+            <img src="{{ $store->logo 
+                ? asset('storage/' . $store->logo) 
+                : 'https://i.ibb.co/N22VY8m/default-store-logo-blue.png' }}"
+                class="w-28 h-28 rounded-lg object-cover shadow-md border border-[#98bad5]/50">
         </div>
 
-        {{-- Informasi Toko --}}
-        @if ($user->store)
-            <hr class="my-6 border-[#b2cbde]">
-            <h2 class="text-2xl font-semibold mb-4 text-[#304674] text-center">Toko</h2>
-            <div class="space-y-3 text-center">
-                <p class="text-[#304674]/90"><strong>Nama Toko:</strong> {{ $user->store->name }}</p>
-                <p class="text-[#304674]/90"><strong>Status Verifikasi:</strong>
-                    {{ $user->store->is_verified ? 'Terverifikasi' : 'Belum Diverifikasi' }}
-                </p>
-                <p class="text-[#304674]/90"><strong>Total Produk:</strong> {{ $user->store->products_count ?? 0 }}</p>
-            </div>
-        @endif
+        <div class="space-y-4 text-[#304674]/90">
+            <p><strong>Nama Toko:</strong> {{ $store->name }}</p>
 
-        {{-- Tombol Kembali --}}
+            <p><strong>Pemilik:</strong> {{ $store->user->name ?? 'Tidak ditemukan' }}</p>
+
+            <p><strong>Status Verifikasi:</strong>
+                @if($store->deleted_at)
+                    <span class="px-2 py-1 rounded bg-[#f8d7da] text-[#842029]">Ditolak</span>
+                @elseif($store->is_verified)
+                    <span class="px-2 py-1 rounded bg-[#b2f2bb] text-[#1b5e20]">Terverifikasi</span>
+                @else
+                    <span class="px-2 py-1 rounded bg-[#b8daff] text-[#0c5460]">Pending</span>
+                @endif
+            </p>
+
+            <p><strong>Total Produk:</strong> {{ $store->products_count ?? 0 }}</p>
+
+            <p><strong>Alamat:</strong> {{ $store->address }}</p>
+            <p><strong>About:</strong> {{ $store->about ?: '-' }}</p>
+        </div>
+
+        <div class="mt-6 flex flex-col gap-3">
+
+            {{-- Jika toko pending --}}
+            @if(!$store->is_verified && !$store->deleted_at)
+
+                {{-- Approve --}}
+                <form action="{{ route('admin.stores.verify', $store->id) }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="w-full py-3 bg-[#b2f2bb] hover:bg-[#8ce99a] text-[#1b5e20] font-semibold rounded-lg transition">
+                        Approve
+                    </button>
+                </form>
+
+                {{-- Reject --}}
+                <form action="{{ route('admin.stores.reject', $store->id) }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="w-full py-3 bg-[#f5c2c7] hover:bg-[#f5a3a8] text-[#b02a37] font-semibold rounded-lg transition">
+                        Reject
+                    </button>
+                </form>
+
+            @endif
+
+            {{-- Jika toko sudah ditolak --}}
+            @if($store->deleted_at)
+                <form action="{{ route('admin.stores.restore', $store->id) }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="w-full py-3 bg-[#98bad5] hover:bg-[#b2cbde] text-[#304674] font-semibold rounded-lg transition">
+                        Restore
+                    </button>
+                </form>
+            @endif
+
+        </div>
+
         <div class="mt-6 text-center">
-            <a href="{{ route('admin.dashboard') }}"
-               class="inline-block px-6 py-3 bg-[#98bad5] hover:bg-[#304674] text-white font-semibold rounded-lg transition">
+            <a href="{{ route('admin.stores.index') }}"
+               class="inline-block px-6 py-3 bg-[#304674] hover:bg-[#1f2f4e] text-white font-semibold rounded-lg transition">
                 Kembali
             </a>
         </div>

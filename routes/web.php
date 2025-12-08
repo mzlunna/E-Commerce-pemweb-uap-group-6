@@ -114,14 +114,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
     // Stores
-    Route::post('/stores/{id}/approve', [AdminStoreController::class, 'approve'])->name('stores.approve');
-    Route::post('/stores/{id}/verify', [AdminStoreController::class, 'verify'])->name('stores.verify');
-    Route::post('/stores/{id}/reject', [AdminStoreController::class, 'reject'])->name('stores.reject');
-    Route::post('/stores/{id}/restore', [AdminStoreController::class, 'restore'])->name('stores.restore');
-    Route::delete('/stores/{id}', [AdminStoreController::class, 'destroy'])->name('stores.destroy');
-    Route::get('/stores', [AdminStoreController::class, 'index'])->name('stores.index');
-    Route::get('/stores/{id}', [AdminStoreController::class, 'show'])->name('stores.show');
-    
+    Route::prefix('stores')->name('stores.')->group(function () {
+    Route::get('/', [AdminStoreController::class, 'index'])->name('index');
+    Route::get('/create', [AdminStoreController::class, 'create'])->name('create');
+    Route::post('/', [AdminStoreController::class, 'store'])->name('store');
+    Route::get('/{id}', [AdminStoreController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [AdminStoreController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [AdminStoreController::class, 'update'])->name('update');
+    Route::post('/{id}/verify', [AdminStoreController::class, 'verify'])->name('verify');
+    Route::post('/{id}/reject', [AdminStoreController::class, 'reject'])->name('reject');
+    Route::delete('/{id}', [AdminStoreController::class, 'destroy'])->name('destroy');
+    Route::post('/{id}/restore', [AdminStoreController::class, 'restore'])->name('restore');
+    });
+
     // Users (self-delete MUST be first)
     Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
     Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
