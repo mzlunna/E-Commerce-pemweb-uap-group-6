@@ -3,11 +3,12 @@
 @section('header', 'Withdrawal Requests')
 
 @section('content')
-<div class="p-6 bg-[#d8e1e8] min-h-screen">
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl">
 
     {{-- Judul --}}
-    <h2 class="text-3xl font-bold mb-6 text-[#304674]">💰 Kelola Penarikan Saldo</h2>
-
+    <div class="bg-[#c6d3e3] px-6 py-4 rounded-lg shadow mb-6">
+    <h2 class="text-3xl font-bold text-[#304674]">💰 Kelola Penarikan Saldo</h2>
+    </div>
     {{-- Tabel Withdrawal --}}
     <div class="overflow-x-auto mb-10">
         <table class="min-w-full bg-[#c6d3e3]/50 rounded-lg shadow">

@@ -3,11 +3,13 @@
 @section('header', 'Order Management')
 
 @section('content')
-<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-lg">
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl">
 
     {{-- Judul --}}
-    <h2 class="text-3xl font-bold mb-6 text-[#304674]">🛒 Kelola Order</h2>
-
+    <div class="bg-[#c6d3e3] px-6 py-4 rounded-lg shadow mb-6">
+        <h2 class="text-3xl font-bold mb-6 text-[#304674]">🛒 Kelola Order</h2>
+    </div>
+    
     {{-- Filter Status --}}
     <div class="mb-6 flex justify-between items-center">
         <select class="px-4 py-2 border border-[#b2cbde] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98bad5] bg-[#d8e1e8] text-[#304674]">

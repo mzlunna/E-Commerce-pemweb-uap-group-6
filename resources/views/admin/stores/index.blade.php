@@ -5,8 +5,10 @@
 @section('content')
 <div class="p-6 bg-[#d8e1e8] min-h-screen rounded-lg">
 
-    <h2 class="text-3xl font-bold mb-6 text-[#304674]">🏬 Kelola Store</h2>
-
+    <div class="bg-[#c6d3e3] px-6 py-4 rounded-lg shadow mb-6">
+        <h2 class="text-3xl font-bold mb-6 text-[#304674]">🏬 Kelola Store</h2>
+    </div>
+    
     {{-- FILTER & CREATE --}}
     <div class="mb-6 flex justify-between items-center">
         <form method="GET">

@@ -1,10 +1,12 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6 bg-[#d8e1e8] min-h-screen">
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl">
 
     {{-- Judul --}}
-    <h2 class="text-3xl font-bold mb-6 text-[#304674]">👥 Kelola User</h2>
+    <div class="bg-[#c6d3e3] px-6 py-4 rounded-lg shadow mb-6">
+        <h2 class="text-3xl font-bold mb-6 text-[#304674]">👥 Kelola User</h2>
+    </div>
 
     {{-- Tombol Tambah User --}}
     <a href="{{ route('admin.users.create')}}"

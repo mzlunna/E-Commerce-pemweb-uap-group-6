@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Admin')
 
 @section('content')
-<div class="p-6 bg-[#d8e1e8] min-h-screen">
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl">
 
     {{-- Header --}}
     <div class="mb-6">
