@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl">
 <div class="flex items-center justify-center min-h-screen bg-[#d8e1e8] p-6">
     <div class="w-full max-w-lg bg-[#c6d3e3]/50 p-8 rounded-xl shadow-lg">
         <h2 class="text-3xl font-bold mb-6 text-[#304674] text-center">🏬 Detail Toko</h2>

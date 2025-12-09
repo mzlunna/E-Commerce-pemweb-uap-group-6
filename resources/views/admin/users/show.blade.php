@@ -1,46 +1,53 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="flex items-center justify-center min-h-screen bg-[#d8e1e8] p-6">
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl flex justify-center">
+
     <div class="w-full max-w-lg bg-[#c6d3e3]/50 p-8 rounded-xl shadow-lg">
 
         <h2 class="text-3xl font-bold mb-6 text-[#304674] text-center">🏬 Detail Toko</h2>
 
         {{-- LOGO TOKO --}}
         <div class="flex justify-center mb-6">
-            <img src="{{ $store->logo 
+            <img src="{{ $store?->logo 
                 ? asset('storage/' . $store->logo) 
                 : 'https://i.ibb.co/N22VY8m/default-store-logo-blue.png' }}"
                 class="w-28 h-28 rounded-lg object-cover shadow-md border border-[#98bad5]/50">
         </div>
 
         <div class="space-y-4 text-[#304674]/90">
-            <p><strong>Nama Toko:</strong> {{ $store->name }}</p>
 
-            <p><strong>Pemilik:</strong> {{ $store->user->name ?? 'Tidak ditemukan' }}</p>
+            <p><strong>Nama Toko:</strong> {{ $store?->name ?? 'Belum membuat toko' }}</p>
+
+            <p><strong>Pemilik:</strong> {{ $user->name }}</p>
 
             <p><strong>Status Verifikasi:</strong>
-                @if($store->deleted_at)
+                @if(!$store)
+                    <span class="px-2 py-1 rounded bg-gray-300 text-gray-600">Tidak ada toko</span>
+
+                @elseif($store->deleted_at)
                     <span class="px-2 py-1 rounded bg-[#f8d7da] text-[#842029]">Ditolak</span>
+
                 @elseif($store->is_verified)
                     <span class="px-2 py-1 rounded bg-[#b2f2bb] text-[#1b5e20]">Terverifikasi</span>
+
                 @else
                     <span class="px-2 py-1 rounded bg-[#b8daff] text-[#0c5460]">Pending</span>
                 @endif
             </p>
 
-            <p><strong>Total Produk:</strong> {{ $store->products_count ?? 0 }}</p>
+            <p><strong>Total Produk:</strong> {{ $store?->products_count ?? 0 }}</p>
 
-            <p><strong>Alamat:</strong> {{ $store->address }}</p>
-            <p><strong>About:</strong> {{ $store->about ?: '-' }}</p>
+            <p><strong>Alamat:</strong> {{ $store?->address ?? '-' }}</p>
+
+            <p><strong>About:</strong> {{ $store?->about ?? '-' }}</p>
         </div>
 
+        {{-- Tombol Aksi --}}
+        @if($store)
         <div class="mt-6 flex flex-col gap-3">
 
-            {{-- Jika toko pending --}}
             @if(!$store->is_verified && !$store->deleted_at)
-
-                {{-- Approve --}}
                 <form action="{{ route('admin.stores.verify', $store->id) }}" method="POST">
                     @csrf
                     <button type="submit"
@@ -49,7 +56,6 @@
                     </button>
                 </form>
 
-                {{-- Reject --}}
                 <form action="{{ route('admin.stores.reject', $store->id) }}" method="POST">
                     @csrf
                     <button type="submit"
@@ -57,10 +63,8 @@
                         Reject
                     </button>
                 </form>
-
             @endif
 
-            {{-- Jika toko sudah ditolak --}}
             @if($store->deleted_at)
                 <form action="{{ route('admin.stores.restore', $store->id) }}" method="POST">
                     @csrf
@@ -72,13 +76,15 @@
             @endif
 
         </div>
+        @endif
 
         <div class="mt-6 text-center">
-            <a href="{{ route('admin.stores.index') }}"
+            <a href="{{ route('admin.users.index') }}"
                class="inline-block px-6 py-3 bg-[#304674] hover:bg-[#1f2f4e] text-white font-semibold rounded-lg transition">
                 Kembali
             </a>
         </div>
+
     </div>
 </div>
 @endsection

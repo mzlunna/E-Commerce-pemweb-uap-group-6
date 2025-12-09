@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
-    /**
-     * Display a listing of all users with their stores.
-     */
     public function index(Request $request)
     {
         $query = User::latest();
@@ -39,35 +36,32 @@ class AdminUserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    /**
-     * Show detail user.
-     */
-    public function show($id)
+        public function show($id)
     {
         $user = User::findOrFail($id);
 
+        // Load relasi store
         $user->load('store');
 
-        if ($user->store) {
-            $user->store->loadCount('products')
-                        ->load('storeBalance');
+        // Ambil store (bisa null)
+        $store = $user->store;
+
+        // Jika store ada, load tambahan
+        if ($store) {
+            $store->loadCount('products')
+                ->load('storeBalance');
         }
 
-        return view('admin.users.show', compact('user'));
+        return view('admin.users.show', compact('user', 'store'));
     }
 
-    /**
-     * Show edit form.
-     */
-    public function edit($id)
+
+        public function edit($id)
     {
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
-    /**
-     * Update user.
-     */
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -84,9 +78,6 @@ class AdminUserController extends Controller
                          ->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-    /**
-     * Delete user (admin deleting others).
-     */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -103,9 +94,6 @@ class AdminUserController extends Controller
                          ->with('success', 'Pengguna berhasil dihapus.');
     }
 
-    /**
-     * Self-delete confirmation page.
-     */
     public function confirmDelete($id)
     {
         $user = User::findOrFail($id);
@@ -118,9 +106,6 @@ class AdminUserController extends Controller
         return view('admin.users.confirm-delete', compact('user'));
     }
 
-    /**
-     * Delete own account with password confirmation.
-     */
     public function destroySelf(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -153,19 +138,11 @@ class AdminUserController extends Controller
                          ->with('success', "Akun {$name} berhasil dihapus.");
     }
 
-    /*  
-    |--------------------------------------------------------------------------
-    | 🔥 METHOD TAMBAHAN UNTUK CREATE USER
-    |--------------------------------------------------------------------------
-    */
-
-    /** Show Create Form */
     public function create()
     {
         return view('admin.users.create');
     }
 
-    /** Store New User */
     public function store(Request $request)
     {
         $request->validate([

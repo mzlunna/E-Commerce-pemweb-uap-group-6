@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6 bg-[#d8e1e8] min-h-screen">
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl">
 
     {{-- Judul --}}
     <h2 class="text-3xl font-bold mb-6 text-[#304674]">➕ Tambah User</h2>
