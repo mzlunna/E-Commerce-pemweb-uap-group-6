@@ -34,8 +34,7 @@
                 <select name="role" 
                         class="w-full px-4 py-2 rounded-lg border border-[#304674] bg-[#d8e1e8] text-[#304674] focus:outline-none focus:ring-2 focus:ring-[#98bad5]">
                     <option value="admin">Admin</option>
-                    <option value="seller">Seller</option>
-                    <option value="user">User</option>
+                    <option value="member">Member</option>
                 </select>
             </div>
 

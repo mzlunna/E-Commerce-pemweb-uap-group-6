@@ -7,7 +7,7 @@
 
     {{-- Header --}}
     <div class="mb-6">
-        <h1 class="text-3xl font-bold text-[#304674]">Selamat Datang di Dashboard Admin</h1>
+        <h1 class="text-3xl font-bold text-[#304674]">Selamat Datang, {{ auth()->user()->name }}!</h1>
         <p class="text-[#304674]/80 mt-1">Overview sistem dan aktivitas terbaru</p>
     </div>
 
