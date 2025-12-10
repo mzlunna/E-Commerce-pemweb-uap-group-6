@@ -30,8 +30,6 @@
             <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-500">Dashboard</a>
             <a href="{{ route('admin.users.index') }}" class="hover:text-blue-500">Users</a>
             <a href="{{ route('admin.stores.index') }}" class="hover:text-blue-500">Stores</a>
-            <a href="{{ route('admin.orders.index') }}" class="hover:text-blue-500">Orders</a>
-            <a href="{{ route('admin.withdrawals.index') }}" class="hover:text-blue-500">Withdrawals</a>
 
             <!-- Logout Desktop -->
             <form action="{{ route('logout') }}" method="POST">
@@ -59,8 +57,6 @@
             <a href="{{ route('admin.dashboard') }}" class="py-2 px-3 rounded hover:bg-gray-200">Dashboard</a>
             <a href="{{ route('admin.users.index') }}" class="py-2 px-3 rounded hover:bg-gray-200">Users</a>
             <a href="{{ route('admin.stores.index') }}" class="py-2 px-3 rounded hover:bg-gray-200">Stores</a>
-            <a href="{{ route('admin.orders.index') }}" class="py-2 px-3 rounded hover:bg-gray-200">Orders</a>
-            <a href="{{ route('admin.withdrawals.index') }}" class="py-2 px-3 rounded hover:bg-gray-200">Withdrawals</a>
         </nav>
 
         <!-- Logout Mobile -->
@@ -71,8 +67,6 @@
             </button>
         </form>
     </aside>
-
-    <!-- CONTENT -->
     <main class="p-4">
         @yield('content')
     </main>

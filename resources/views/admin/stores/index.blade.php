@@ -6,7 +6,7 @@
 <div class="p-6 bg-[#d8e1e8] min-h-screen rounded-lg">
 
     <div class="bg-[#c6d3e3] px-6 py-4 rounded-lg shadow mb-6">
-        <h2 class="text-3xl font-bold mb-6 text-[#304674]">🏬 Kelola Store</h2>
+        <h2 class="text-3xl font-bold mb-6 text-[#304674]">🏬 Kelola Toko</h2>
     </div>
     
     {{-- FILTER & CREATE --}}
@@ -91,7 +91,7 @@
                     {{-- ACTION BUTTONS --}}
                     <td class="py-3 px-6 flex flex-wrap justify-center gap-2">
                         <a href="{{ route('admin.stores.show', $store->id) }}"
-                           class="px-3 py-1 bg-[#98bad5] hover:bg-[#b2cbde] text-[#304674] rounded">View</a>
+                           class="px-3 py-1 bg-[#98bad5] hover:bg-[#b2cbde] text-[#304674] rounded">Lihat</a>
 
                         @if(!$store->is_verified && !$store->deleted_at)
                         <a href="{{ route('admin.stores.edit', $store->id) }}"
@@ -103,7 +103,7 @@
                             onsubmit="return confirm('Yakin ingin menghapus store ini?');">
                             @csrf
                             @method('DELETE')
-                            <button class="px-3 py-1 bg-[#f5c2c7] hover:bg-[#f5a3a8] text-[#b02a37] rounded">Delete</button>
+                            <button class="px-3 py-1 bg-[#f5c2c7] hover:bg-[#f5a3a8] text-[#b02a37] rounded">Hapus</button>
                         </form>
                         @endif
 

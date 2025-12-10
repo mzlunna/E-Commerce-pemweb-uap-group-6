@@ -136,18 +136,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
     Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-    
-    // Orders
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{order}/verify-payment', [AdminOrderController::class, 'verifyPayment'])->name('orders.verify-payment');
-    
-    // Withdrawals
-    Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
-    Route::get('/withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
-    Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');
-    Route::post('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');  
+    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy'); 
     });
 });
 

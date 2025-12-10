@@ -47,11 +47,29 @@
             @endif
 
             @if($store->deleted_at)
-                <form action="{{ route('admin.stores.restore', $store->id) }}" method="POST">@csrf
-                    <button type="submit" class="w-full py-3 bg-[#98bad5] hover:bg-[#b2cbde] text-[#304674] font-semibold rounded-lg transition">
-                        Restore
-                    </button>
-                </form>
+
+            {{-- ACTION BUTTONS CENTER --}}
+<div class="flex justify-center items-center gap-3 mt-4">
+
+             {{-- RESTORE --}}
+            <form action="{{ route('admin.stores.restore', $store->id) }}" method="POST">
+                @csrf
+                <button class="px-3 py-1 bg-[#b8daff] hover:bg-[#90c2ff] text-[#0c5460] rounded">
+                    Restore
+                </button>
+            </form>
+
+            {{-- HAPUS PERMANEN --}}
+            <form action="{{ route('admin.stores.destroy', $store->id) }}" method="POST"
+                onsubmit="return confirm('⚠️ Hapus permanen? Data tidak bisa dikembalikan!');">
+                @csrf
+                @method('DELETE')
+                <button class="px-3 py-1 bg-red-700 hover:bg-red-800 text-white rounded">
+                    Hapus Permanent
+                </button>
+            </form>
+
+        </div>
             @endif
         </div>
 
