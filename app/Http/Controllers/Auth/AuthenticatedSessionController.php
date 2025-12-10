@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
         }
         
         // Default: Buyer
-        return redirect()->intended(route('buyer.home'));
+        return redirect()->intended(route('buyer.dashboard'));
     }
 
     public function destroy(Request $request): RedirectResponse
