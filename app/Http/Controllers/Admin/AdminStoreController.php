@@ -44,32 +44,34 @@ class AdminStoreController extends Controller
         return view('admin.stores.show', compact('store'));
     }
 
-    /* ===============================
-       🔹 FORM CREATE
-    ================================ */
     public function create()
     {
         $users = User::where('role', 'member')->get();
         return view('admin.stores.create', compact('users'));
     }
 
-    /* ===============================
-       🔹 SIMPAN DATA STORE
-    ================================ */
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'description' => 'nullable|string',
+            'user_id'      => 'required|exists:users,id',
+            'name'         => 'required|string|max:255',
+            'address'      => 'required|string',
+            'about'        => 'nullable|string', // kolom ini WAJIB ada
+            'phone'        => 'nullable|string',
+            'city'         => 'nullable|string',
+            'address_id'   => 'nullable|numeric',
+            'postal_code'  => 'nullable|string|max:10',
         ]);
 
         Store::create([
-            'user_id' => $request->user_id,
-            'name' => $request->name,
-            'address' => $request->address,
-            'description' => $request->description,
+            'user_id'     => $request->user_id,
+            'name'        => $request->name,
+            'address'     => $request->address,
+            'about'       => $request->about ?? '-',  // default agar tidak error
+            'phone'       => $request->phone,
+            'city'        => $request->city,
+            'address_id'  => $request->address_id ?? 0,
+            'postal_code' => $request->postal_code ?? '00000',
             'is_verified' => false,
         ]);
 
@@ -77,9 +79,6 @@ class AdminStoreController extends Controller
                          ->with('success', 'Toko berhasil dibuat.');
     }
 
-    /* ===============================
-       🔹 FORM EDIT
-    ================================ */
     public function edit($id)
     {
         $store = Store::withTrashed()->findOrFail($id);
@@ -88,25 +87,30 @@ class AdminStoreController extends Controller
         return view('admin.stores.edit', compact('store', 'users'));
     }
 
-    /* ===============================
-       🔹 UPDATE STORE
-    ================================ */
     public function update(Request $request, $id)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'description' => 'nullable|string',
+            'user_id'      => 'required|exists:users,id',
+            'name'         => 'required|string|max:255',
+            'address'      => 'required|string',
+            'about'        => 'nullable|string',
+            'phone'        => 'nullable|string',
+            'city'         => 'nullable|string',
+            'address_id'   => 'nullable|numeric',
+            'postal_code'  => 'nullable|string|max:10',
         ]);
 
         $store = Store::withTrashed()->findOrFail($id);
 
         $store->update([
-            'user_id' => $request->user_id,
-            'name' => $request->name,
-            'address' => $request->address,
-            'description' => $request->description,
+            'user_id'     => $request->user_id,
+            'name'        => $request->name,
+            'address'     => $request->address,
+            'about'       => $request->about ?? '-',
+            'phone'       => $request->phone,
+            'city'        => $request->city,
+            'address_id'  => $request->address_id ?? 0,
+            'postal_code' => $request->postal_code ?? '00000',
         ]);
 
         return redirect()->route('admin.stores.show', $store->id)
@@ -121,9 +125,7 @@ class AdminStoreController extends Controller
             return back()->with('info', 'Toko sudah terverifikasi.');
         }
 
-        $store->update([
-            'is_verified' => true,
-        ]);
+        $store->update(['is_verified' => true]);
 
         return redirect()
             ->route('admin.stores.show', $store->id)

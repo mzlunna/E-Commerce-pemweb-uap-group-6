@@ -18,13 +18,13 @@ class Store extends Model
         'city',
         'address',
         'address_id',
-        'postal_code', // tambahkan ini
+        'postal_code', 
         'is_verified'
     ];
 
     protected $attributes = [
-        'address_id' => '0',   // default kalau kosong
-        'postal_code' => '00000', // default supaya MySQL nggak error
+        'address_id' => '0', 
+        'postal_code' => '00000', 
     ];
 
     protected $casts = [
