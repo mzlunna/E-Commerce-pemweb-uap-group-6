@@ -1,174 +1,159 @@
-<!-- buyer/profile/edit.blade.php -->
 @extends('layouts.buyer')
+
 @section('title', 'Edit Profil - ELSHOP')
+
 @section('content')
-<div class="container mt-5">
-    <div class="dashboard-header">
-        <h1>👤 Edit Profil Anda</h1>
+<div class="section">
+    <div class="section-header">
+        <h2 class="section-title">Edit Profil Saya</h2>
     </div>
 
-    <div class="content-card">
-        <form action="{{ route('buyer.profile.update') }}" method="POST">
-            @csrf @method('PATCH')
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div style="background: white; border-radius: 16px; padding: 32px; box-shadow: var(--shadow); border: 1px solid var(--accent-light);">
+            
+            <form action="{{ route('buyer.profile.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-            <div class="form-group">
-                <label>Nama Lengkap *</label>
-                <input type="text" name="name" class="form-control" value="{{ auth()->user()->name }}" required>
-                @error('name') <span class="error">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label>Email *</label>
-                <input type="email" name="email" class="form-control" value="{{ auth()->user()->email }}" required>
-                @error('email') <span class="error">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label>Nomor Telepon</label>
-                <input type="text" name="phone" class="form-control" value="{{ auth()->user()->phone }}">
-                @error('phone') <span class="error">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label>Alamat</label>
-                <textarea name="address" class="form-control" rows="3">{{ auth()->user()->address }}</textarea>
-                @error('address') <span class="error">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">Simpan Perubahan</button>
-                <a href="{{ route('buyer.dashboard') }}" class="btn-secondary">Batal</a>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
-
----
-
-<!-- buyer/store/create.blade.php -->
-@extends('layouts.app')
-@section('title', 'Daftar Toko - ELSHOP')
-@section('content')
-<div class="container mt-5">
-    <div class="dashboard-header">
-        <h1>🏪 Daftar Toko Anda</h1>
-        <p>Mulai berjualan di ELSHOP</p>
-    </div>
-
-    <div class="content-card">
-        <form action="{{ route('buyer.store.store') }}" method="POST">
-            @csrf
-
-            <div class="form-group">
-                <label>Nama Toko *</label>
-                <input type="text" name="name" class="form-control" placeholder="Nama toko Anda" required>
-                @error('name') <span class="error">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label>Nomor Telepon *</label>
-                <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx" required>
-                @error('phone') <span class="error">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label>Alamat Toko *</label>
-                <textarea name="address" class="form-control" rows="3" placeholder="Jalan, No, RT/RW..." required></textarea>
-                @error('address') <span class="error">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Kota *</label>
-                    <input type="text" name="city" class="form-control" required>
-                    @error('city') <span class="error">{{ $message }}</span> @enderror
+                <!-- Profile Photo Upload -->
+                <div style="margin-bottom: 32px; text-align: center; padding-bottom: 32px; border-bottom: 1px solid var(--accent-light);">
+                    <label style="display: block; font-weight: 600; margin-bottom: 16px; color: var(--gray-700); text-align: left;">
+                        Foto Profil
+                    </label>
+                    <div style="display: inline-block; position: relative;">
+                        <div id="photoPreview" style="width: 120px; height: 120px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 0 auto; overflow: hidden; border: 3px solid var(--accent-light);">
+                            @if(auth()->user()->avatar)
+                                <img src="{{ asset('storage/' . auth()->user()->avatar) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <span style="font-size: 3rem; font-weight: 700; color: var(--gray-400);">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </span>
+                            @endif
+                        </div>
+                        <label for="avatar" style="position: absolute; bottom: 0; right: 0; background: var(--accent); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow-md); border: 3px solid white;">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="avatar" name="avatar" accept="image/*" style="display: none;" onchange="previewPhoto(event)">
+                    </div>
+                    <p style="margin-top: 12px; color: var(--gray-500); font-size: 0.875rem;">JPG atau PNG, maksimal 2MB</p>
+                    @error('avatar')
+                        <span style="color: var(--danger); font-size: 0.875rem; display: block; margin-top: 4px;">{{ $message }}</span>
+                    @enderror
                 </div>
 
-                <div class="form-group">
-                    <label>Kode Pos *</label>
-                    <input type="text" name="postal_code" class="form-control" required>
-                    @error('postal_code') <span class="error">{{ $message }}</span> @enderror
+                <!-- Full Name -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--gray-700);">
+                        Nama Lengkap <span style="color: var(--danger);">*</span>
+                    </label>
+                    <input type="text" name="name" class="filter-select"
+                           style="width: 100%; padding: 12px 16px; border: 1px solid var(--accent-light); border-radius: 8px; font-size: 0.938rem;"
+                           value="{{ old('name', auth()->user()->name) }}" required>
+                    @error('name')
+                        <span style="color: var(--danger); font-size: 0.875rem; display: block; margin-top: 4px;">{{ $message }}</span>
+                    @enderror
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>Deskripsi Toko</label>
-                <textarea name="about" class="form-control" rows="4" placeholder="Ceritakan tentang toko Anda..."></textarea>
-                @error('about') <span class="error">{{ $message }}</span> @enderror
-            </div>
+                <!-- Email -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--gray-700);">
+                        Email <span style="color: var(--danger);">*</span>
+                    </label>
+                    <input type="email" name="email" class="filter-select"
+                           style="width: 100%; padding: 12px 16px; border: 1px solid var(--accent-light); border-radius: 8px; font-size: 0.938rem;"
+                           value="{{ old('email', auth()->user()->email) }}" required>
+                    @error('email')
+                        <span style="color: var(--danger); font-size: 0.875rem; display: block; margin-top: 4px;">{{ $message }}</span>
+                    @enderror
+                </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">Daftar Toko</button>
-                <a href="{{ route('buyer.dashboard') }}" class="btn-secondary">Batal</a>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
+                <!-- Phone -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--gray-700);">
+                        Nomor Telepon
+                    </label>
+                    <input type="text" name="phone" class="filter-select"
+                           style="width: 100%; padding: 12px 16px; border: 1px solid var(--accent-light); border-radius: 8px; font-size: 0.938rem;"
+                           value="{{ old('phone', auth()->user()->phone) }}" placeholder="08xxxxxxxxxx">
+                    @error('phone')
+                        <span style="color: var(--danger); font-size: 0.875rem; display: block; margin-top: 4px;">{{ $message }}</span>
+                    @enderror
+                </div>
 
----
+                <!-- Address -->
+                <div style="margin-bottom: 32px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--gray-700);">
+                        Alamat Lengkap
+                    </label>
+                    <textarea name="address" rows="3" class="filter-select"
+                              style="width: 100%; padding: 12px 16px; border: 1px solid var(--accent-light); border-radius: 8px; font-size: 0.938rem; resize: vertical;"
+                              placeholder="Masukkan alamat lengkap Anda">{{ old('address', auth()->user()->address) }}</textarea>
+                    @error('address')
+                        <span style="color: var(--danger); font-size: 0.875rem; display: block; margin-top: 4px;">{{ $message }}</span>
+                    @enderror
+                </div>
 
-<!-- buyer/store/status.blade.php -->
-@extends('layouts.app')
-@section('title', 'Status Toko - ELSHOP')
-@section('content')
-<div class="container mt-5">
-    <div class="dashboard-header">
-        <h1>🏪 Status Toko Anda</h1>
-    </div>
+                <!-- Password Change Section (Optional) -->
+                <div style="padding: 24px; background: var(--gray-50); border-radius: 12px; margin-bottom: 32px;">
+                    <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--gray-800);">Ubah Password (Opsional)</h3>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--gray-700);">
+                            Password Baru
+                        </label>
+                        <input type="password" name="password" class="filter-select"
+                               style="width: 100%; padding: 12px 16px; border: 1px solid var(--accent-light); border-radius: 8px; font-size: 0.938rem;"
+                               placeholder="Kosongkan jika tidak ingin mengubah">
+                        @error('password')
+                            <span style="color: var(--danger); font-size: 0.875rem; display: block; margin-top: 4px;">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-    @if($store)
-        <div class="content-card">
-            <div class="status-card">
-                <div class="status-icon">
-                    @if($store->is_verified)
-                        ✅
-                    @else
-                        ⏳
-                    @endif
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--gray-700);">
+                            Konfirmasi Password Baru
+                        </label>
+                        <input type="password" name="password_confirmation" class="filter-select"
+                               style="width: 100%; padding: 12px 16px; border: 1px solid var(--accent-light); border-radius: 8px; font-size: 0.938rem;"
+                               placeholder="Ulangi password baru">
+                    </div>
                 </div>
-                <div class="status-info">
-                    <h2>{{ $store->name }}</h2>
-                    @if($store->is_verified)
-                        <p class="status-badge success">Toko Anda Telah Diverifikasi</p>
-                        <p>Selamat! Toko Anda sudah disetujui dan siap untuk melayani pelanggan.</p>
-                        <a href="{{ route('seller.dashboard') }}" class="btn-primary">Kelola Toko</a>
-                    @else
-                        <p class="status-badge warning">Menunggu Verifikasi</p>
-                        <p>Admin sedang meninjau aplikasi toko Anda. Proses verifikasi biasanya memakan waktu 1-2 hari kerja.</p>
-                        <p style="margin-top: 20px; color: #999;">Anda akan menerima notifikasi ketika toko Anda diverifikasi.</p>
-                    @endif
-                </div>
-            </div>
 
-            <div class="store-details">
-                <h3>Informasi Toko</h3>
-                <div class="detail-row">
-                    <label>Nama Toko</label>
-                    <p>{{ $store->name }}</p>
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 16px;">
+                    <button type="submit" style="flex: 1; background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow);">
+                        Simpan Perubahan
+                    </button>
+                    <a href="{{ route('buyer.dashboard') }}" style="flex: 1; background: white; color: var(--gray-700); border: 2px solid var(--accent-light); padding: 14px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
+                        Batal
+                    </a>
                 </div>
-                <div class="detail-row">
-                    <label>Kota</label>
-                    <p>{{ $store->city }}</p>
-                </div>
-                <div class="detail-row">
-                    <label>Telepon</label>
-                    <p>{{ $store->phone }}</p>
-                </div>
-                <div class="detail-row">
-                    <label>Tanggal Pendaftaran</label>
-                    <p>{{ $store->created_at->format('d M Y') }}</p>
-                </div>
-            </div>
+            </form>
+
         </div>
-    @else
-        <div class="empty-state">
-            <p style="font-size: 64px; margin-bottom: 20px;">🏪</p>
-            <h2>Belum Daftar Toko</h2>
-            <p style="color: #999; margin: 20px 0;">Daftar toko Anda sekarang dan mulai berjualan</p>
-            <a href="{{ route('buyer.store.apply') }}" class="btn-primary">Daftar Toko</a>
-        </div>
-    @endif
+    </div>
 </div>
+
+<script>
+function previewPhoto(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = `<img src="${reader.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+
+<style>
+button[type="submit"]:hover {
+    background: var(--primary) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+a[href*="dashboard"]:hover {
+    background: var(--accent-lightest) !important;
+    border-color: var(--accent);
+}
+</style>
 @endsection

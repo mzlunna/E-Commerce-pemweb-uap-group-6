@@ -4,22 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TransactionDetail extends Model
+class CartItem extends Model
 {
     protected $fillable = [
-        'transaction_id',
+        'buyer_id',
         'product_id',
-        'qty',
-        'subtotal',
+        'quantity',
     ];
 
     protected $casts = [
-        'subtotal' => 'decimal:2',
+        'quantity' => 'integer',
     ];
 
-    public function transaction()
+    public function buyer()
     {
-        return $this->belongsTo(Transaction::class);
+        return $this->belongsTo(Buyer::class);
     }
 
     public function product()

@@ -2,28 +2,26 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 class StoreBalance extends Model
 {
-
     protected $fillable = [
         'store_id',
         'balance',
     ];
 
     protected $casts = [
-        'balanace' => 'decimal:2'
+        'balance' => 'decimal:2', // Sesuai DB decimal(26,2)
     ];
 
-    // relationships one store balance belongs to one store
+    // Relationships
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
 
-    public function storeBalanceHistories()
+    public function histories()
     {
         return $this->hasMany(StoreBalanceHistory::class);
     }
@@ -31,5 +29,11 @@ class StoreBalance extends Model
     public function withdrawals()
     {
         return $this->hasMany(Withdrawal::class);
+    }
+
+    // Accessors
+    public function getFormattedBalanceAttribute()
+    {
+        return 'Rp ' . number_format($this->balance, 0, ',', '.');
     }
 }

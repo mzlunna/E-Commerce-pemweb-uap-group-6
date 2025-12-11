@@ -1,83 +1,109 @@
 /**
- * Buyer JavaScript - Global Scripts
+ * Buyer JavaScript - FIXED RELOAD LOOP
  * File: resources/js/buyer.js
- * 
- * Contains:
- * - Profile Dropdown functionality
- * - Other buyer-related scripts
  */
 
-// Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ===== PROFILE DROPDOWN =====
+    // Profile Dropdown
     initProfileDropdown();
     
-    // ===== AUTO DISMISS ALERTS =====
-    autoHideAlerts();
+    // Alert Close Buttons
+    initAlertButtons();
+    
+    // Active Nav Link
+    setActiveNavLink();
+    
+    // Prevent All Default Link Behaviors
+    preventDefaultLinks();
     
 });
 
 /**
- * Initialize Profile Dropdown
+ * Profile Dropdown - INSTANT (No Animation)
  */
 function initProfileDropdown() {
-    const profileDropdown = document.getElementById('profileDropdown');
-    const dropdownOverlay = document.getElementById('dropdownOverlay');
+    const dropdown = document.querySelector('.profile-dropdown');
     
-    if (!profileDropdown) return; // Exit if not found
+    if (!dropdown) return;
     
-    const trigger = profileDropdown.querySelector('.profile-trigger');
+    const trigger = dropdown.querySelector('.profile-trigger');
     
-    // Toggle dropdown when clicking trigger
+    if (!trigger) return;
+    
+    // Toggle dropdown INSTANTLY
     trigger.addEventListener('click', function(e) {
+        e.preventDefault();
         e.stopPropagation();
-        toggleDropdown();
+        dropdown.classList.toggle('active');
     });
     
-    // Close dropdown when clicking overlay
-    dropdownOverlay.addEventListener('click', function() {
-        closeDropdown();
-    });
-    
-    // Close dropdown when clicking outside
+    // Close on outside click
     document.addEventListener('click', function(e) {
-        if (!profileDropdown.contains(e.target)) {
-            closeDropdown();
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
         }
     });
     
-    // Close dropdown when pressing ESC key
+    // Close on ESC key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            closeDropdown();
+            dropdown.classList.remove('active');
         }
     });
-    
-    // Helper functions
-    function toggleDropdown() {
-        profileDropdown.classList.toggle('active');
-        dropdownOverlay.classList.toggle('active');
-    }
-    
-    function closeDropdown() {
-        profileDropdown.classList.remove('active');
-        dropdownOverlay.classList.remove('active');
-    }
 }
 
 /**
- * Auto hide alerts after 5 seconds
+ * Alert Close Buttons - INSTANT REMOVE (No Animation)
  */
-function autoHideAlerts() {
+function initAlertButtons() {
     const alerts = document.querySelectorAll('.alert');
     
     alerts.forEach(function(alert) {
-        // Auto dismiss after 5 seconds
-        setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        }, 5000);
+        const closeBtn = alert.querySelector('.alert-close');
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert.remove();
+            });
+        }
+        
+        // Auto-hide success alerts after 5 seconds
+        if (alert.classList.contains('alert-success')) {
+            setTimeout(function() {
+                if (alert.parentElement) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
     });
 }
 
+/**
+ * Set Active Nav Link
+ */
+function setActiveNavLink() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(function(link) {
+        const href = link.getAttribute('href');
+        if (href && (href === currentPath || (currentPath.includes(href) && href !== '/'))) {
+            link.classList.add('active');
+        }
+    });
+}
+
+/**
+ * Prevent # Links from Reloading
+ */
+function preventDefaultLinks() {
+    // Prevent empty href links
+    document.querySelectorAll('a[href="#"], a[href=""]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+        });
+    });
+}

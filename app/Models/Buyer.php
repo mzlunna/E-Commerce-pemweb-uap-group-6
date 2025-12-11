@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Buyer extends Model
 {
-
     protected $fillable = [
         'user_id',
         'profile_picture',
@@ -21,5 +20,10 @@ class Buyer extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

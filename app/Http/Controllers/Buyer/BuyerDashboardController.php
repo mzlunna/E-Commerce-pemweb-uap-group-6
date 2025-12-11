@@ -5,36 +5,21 @@ namespace App\Http\Controllers\Buyer;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
-use Illuminate\Http\Request;
 
 class BuyerDashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Product::with(['store', 'images'])
-            ->where('stock', '>', 0);
+        // Get categories with product count
+        $categories = ProductCategory::withCount('products')->get();
 
-        // Search
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
+        // Get featured products with relations
+        $products = Product::with(['images', 'store', 'category'])
+            ->where('stock', '>', 0)
+            ->latest()
+            ->take(8)
+            ->get();
 
-        // Filter by category
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        // Filter by price
-        if ($request->filled('price_min')) {
-            $query->where('price', '>=', $request->price_min);
-        }
-        if ($request->filled('price_max')) {
-            $query->where('price', '<=', $request->price_max);
-        }
-
-        $products = $query->latest()->paginate(12);
-        $categories = ProductCategory::all();
-
-        return view('buyer.dashboard', compact('products', 'categories'));
+        return view('buyer.dashboard', compact('categories', 'products'));
     }
 }
