@@ -36,19 +36,31 @@
                         </p>
                     </div>
 
-                    @php
-                        $statusConfig = [
-                            'unpaid' => ['color' => 'warning', 'text' => 'Menunggu Pembayaran', 'icon' => '⏳'],
-                            'paid' => ['color' => 'info', 'text' => 'Diproses', 'icon' => '⚙️'],
-                            'shipped' => ['color' => 'primary', 'text' => 'Dikirim', 'icon' => '🚚'],
-                            'completed' => ['color' => 'success', 'text' => 'Selesai', 'icon' => '✓'],
-                            'cancelled' => ['color' => 'danger', 'text' => 'Dibatalkan', 'icon' => '✕']
-                        ];
-                        $status = $statusConfig[$order->payment_status] ?? $statusConfig['unpaid'];
-                    @endphp
-                    <span class="status-badge status-{{ $status['color'] }}">
-                        <span class="status-icon">{{ $status['icon'] }}</span>
-                        {{ $status['text'] }}
+                                    @php
+                    if ($order->payment_status === 'cancelled') {
+                        $status = ['color' => 'var(--danger)', 'text' => 'Dibatalkan'];
+
+                    } elseif ($order->shipping_type === 'delivered') {
+                        $status = ['color' => 'var(--success)', 'text' => 'Selesai'];
+
+                    } elseif ($order->shipping_type === 'shipped') {
+                        $status = ['color' => 'var(--info)', 'text' => 'Dikirim'];
+
+                    } elseif ($order->payment_status === 'paid') {
+                        $status = ['color' => 'var(--accent)', 'text' => 'Diproses'];
+
+                    } else {
+                        $status = ['color' => 'var(--warning)', 'text' => 'Menunggu Pembayaran'];
+                    }
+                @endphp
+
+                <span class="status-badge" style="
+                    color: {{ $status['color'] }};
+                    background: {{ $status['color'] }}22;
+                ">
+                    {{ $status['text'] }}
+                </span>
+
                     </span>
                 </div>
             </div>

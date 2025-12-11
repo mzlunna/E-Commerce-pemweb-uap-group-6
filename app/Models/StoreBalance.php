@@ -12,10 +12,13 @@ class StoreBalance extends Model
     ];
 
     protected $casts = [
-        'balance' => 'decimal:2', // Sesuai DB decimal(26,2)
+        'balance' => 'decimal:2',
     ];
 
-    // Relationships
+    protected $attributes = [
+        'balance' => 0
+    ];
+
     public function store()
     {
         return $this->belongsTo(Store::class);
@@ -31,7 +34,6 @@ class StoreBalance extends Model
         return $this->hasMany(Withdrawal::class);
     }
 
-    // Accessors
     public function getFormattedBalanceAttribute()
     {
         return 'Rp ' . number_format($this->balance, 0, ',', '.');

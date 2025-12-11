@@ -8,12 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-<<<<<<< HEAD
-    /**
-     * Handle an incoming request.
-     */
-=======
->>>>>>> origin/main
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         $user = auth()->user();

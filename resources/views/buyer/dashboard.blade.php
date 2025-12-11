@@ -1,14 +1,6 @@
 @extends('layouts.buyer')
 
-<<<<<<< HEAD
-@section('title', 'Dashboard - Buyer')
-
-@section('styles')
-    @vite(['resources/css/dashboard-buyer.css'])
-@endsection,
-=======
 @section('title', 'ELSHOP - Dashboard Pembeli')
->>>>>>> origin/main
 
 @section('content')
     {{-- Hero Banner --}}

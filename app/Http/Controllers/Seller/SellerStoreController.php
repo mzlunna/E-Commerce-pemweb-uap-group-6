@@ -32,7 +32,7 @@ class SellerStoreController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'about' => 'nullable|string',
             'address' => 'required|string',
             'phone' => 'required|string|max:20',
             'logo' => 'nullable|image|max:2048',
@@ -45,8 +45,9 @@ class SellerStoreController extends Controller
                 ->with('error', 'Toko tidak ditemukan.');
         }
 
-        $data = $request->only(['name', 'description', 'address', 'phone']);
+        $data = $request->only(['name', 'about', 'address', 'phone']);
 
+        // LOGO
         if ($request->hasFile('logo')) {
             if ($store->logo) {
                 Storage::disk('public')->delete($store->logo);

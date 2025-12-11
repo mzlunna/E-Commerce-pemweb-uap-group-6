@@ -33,36 +33,43 @@ class Transaction extends Model
         'balance_credited_at' => 'datetime',
     ];
 
-    // === RELATIONS ===
+    // ============================
+    // RELATIONS
+    // ============================
 
+    // Buyer pemilik pesanan
     public function buyer()
     {
-        return $this->belongsTo(Buyer::class);
+        return $this->belongsTo(Buyer::class, 'buyer_id');
     }
 
+    // Jika ingin akses user buyer dengan nama "user"
     public function user()
     {
         return $this->belongsTo(Buyer::class, 'buyer_id');
     }
 
+    // Toko penjual
     public function store()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
-    // PAKAI INI SAJA (rapi)
+    // Detail item transaksi
     public function details()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'transaction_id');
     }
 
-    public function productReviews()
-    {
-        return $this->hasMany(ProductReview::class);
-    }
+    // Alias details (bebas dipakai buyer/seller)
     public function transactionDetails()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'transaction_id');
     }
 
+    // Review produk setelah completed
+    public function productReviews()
+    {
+        return $this->hasMany(ProductReview::class, 'transaction_id');
+    }
 }

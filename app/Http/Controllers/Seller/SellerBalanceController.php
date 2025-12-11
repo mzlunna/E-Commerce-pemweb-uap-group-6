@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
-use App\Models\StoreBalance;
-use App\Models\StoreBalanceHistory;
 use Illuminate\Http\Request;
 
 class SellerBalanceController extends Controller
@@ -13,25 +11,26 @@ class SellerBalanceController extends Controller
     {
         $store = auth()->user()->store;
 
-        // Ambil saldo toko dari tabel store_balances
-        $balance = $store->balance;
+        // Ambil saldo toko dari relasi balance()
+        $balanceModel = $store->balance()->first();
 
-        $currentBalance = $balance->balance ?? 0;
+        // Jika belum punya record saldo, buat
+        if (!$balanceModel) {
+            $store->balance()->create(['balance' => 0]);
+            $balanceModel = $store->balance;
+        }
 
-        // Saldo pending = semua penarikan yang statusnya "pending"
-        $pendingBalance = $store->withdrawals()
-            ->where('status', 'pending')
-            ->sum('amount');
+        // Format saldo untuk Blade
+        $balance = (object) [
+            'available' => $balanceModel->balance,
+            'pending'   => $store->withdrawals()
+                                ->where('status', 'pending')
+                                ->sum('amount'),
+        ];
 
-        // Riwayat history saldo
-        $transactions = $balance
-            ? $balance->histories()->latest()->get()
-            : collect([]);
+        // Riwayat transaksi saldo
+        $transactions = $balanceModel->histories()->latest()->get();
 
-        return view('seller.balance.index', compact(
-            'currentBalance',
-            'pendingBalance',
-            'transactions'
-        ));
+        return view('seller.balance.index', compact('balance', 'transactions'));
     }
 }

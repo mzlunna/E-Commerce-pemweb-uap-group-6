@@ -15,6 +15,18 @@
 
         <hr>
 
+        <h3>Produk</h3>
+
+        @foreach($order->details as $d)
+            <p>
+                {{ $d->product->name }} - 
+                x{{ $d->qty }} = 
+                Rp {{ number_format($d->subtotal,0,',','.') }}
+            </p>
+        @endforeach
+
+        <hr>
+
         <form action="{{ route('seller.orders.update', $order->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -30,7 +42,7 @@
 
             <div class="form-group">
                 <label>Nomor Resi</label>
-                <input type="text" name="tracking_number" class="form-input" 
+                <input type="text" name="tracking_number" class="form-input"
                        value="{{ $order->tracking_number }}">
             </div>
 

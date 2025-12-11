@@ -9,11 +9,8 @@ class Store extends Model
 {
     use SoftDeletes;
 
-<<<<<<< HEAD
-=======
     protected $table = 'stores';
 
->>>>>>> origin/main
     protected $fillable = [
         'user_id',
         'name',
@@ -55,33 +52,18 @@ class Store extends Model
         return $this->hasMany(Product::class);
     }
 
-<<<<<<< HEAD
-=======
     // Saldo toko
->>>>>>> origin/main
-    public function storeBalance()
+    public function balance()
     {
         return $this->hasOne(StoreBalance::class);
     }
 
-<<<<<<< HEAD
-=======
     // Transaksi toko
->>>>>>> origin/main
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
 
-<<<<<<< HEAD
-    public function getStatusAttribute()
-    {
-        if ($this->deleted_at) return 'rejected';
-        if ($this->is_verified) return 'approved';
-        return 'pending';
-    }
-}
-=======
     // Withdrawals (has many through store_balance)
     public function withdrawals()
     {
@@ -107,4 +89,3 @@ class Store extends Model
         return $this->is_verified ? 'approved' : 'pending';
     }
 }
->>>>>>> origin/main

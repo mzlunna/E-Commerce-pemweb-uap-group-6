@@ -99,11 +99,7 @@ class ProductCategorySeeder extends Seeder
             [
                 'name' => 'Camilan Pedas',
                 'slug' => 'camilan-pedas',
-<<<<<<< HEAD
-                'image' => '🌶',
-=======
                 'image' => '🌶️',
->>>>>>> origin/main
                 'tagline' => 'Pedas nikmat bikin nagih',
                 'description' => 'Keripik pedas, makaroni pedas, dan snack rasa ekstra pedas',
             ],
@@ -117,12 +113,6 @@ class ProductCategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-<<<<<<< HEAD
-            ProductCategory::create($category);
-        }
-    }
-}
-=======
             ProductCategory::updateOrCreate(
                 ['slug' => $category['slug']], // Cegah duplikasi
                 $category
@@ -130,4 +120,3 @@ class ProductCategorySeeder extends Seeder
         }
     }
 }
->>>>>>> origin/main

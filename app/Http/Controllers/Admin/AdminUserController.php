@@ -36,31 +36,29 @@ class AdminUserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-        public function show($id)
+
+    public function show($id)
     {
         $user = User::findOrFail($id);
-
-        // Load relasi store
         $user->load('store');
 
-        // Ambil store (bisa null)
         $store = $user->store;
 
-        // Jika store ada, load tambahan
         if ($store) {
             $store->loadCount('products')
-                ->load('storeBalance');
+                  ->load('storeBalance');
         }
 
         return view('admin.users.show', compact('user', 'store'));
     }
 
 
-        public function edit($id)
+    public function edit($id)
     {
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
+
 
     public function update(Request $request, $id)
     {
@@ -82,9 +80,7 @@ class AdminUserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $isSelf = $user->id === auth()->id();
-
-        if ($isSelf) {
+        if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.confirmDelete', $user->id);
         }
 
@@ -92,9 +88,8 @@ class AdminUserController extends Controller
 
         return redirect()->route('admin.users.index')
                          ->with('success', 'Pengguna berhasil dihapus.');
-<<<<<<< HEAD
-=======
     }
+
 
     public function confirmDelete($id)
     {
@@ -107,6 +102,7 @@ class AdminUserController extends Controller
 
         return view('admin.users.confirm-delete', compact('user'));
     }
+
 
     public function destroySelf(Request $request, $id)
     {
@@ -140,80 +136,12 @@ class AdminUserController extends Controller
                          ->with('success', "Akun {$name} berhasil dihapus.");
     }
 
-    public function create()
-    {
-        return view('admin.users.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'role'     => 'required|in:admin,member',
-            'password' => 'required|min:6'
-        ]);
-
-        User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'role'     => $request->role,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect()->route('admin.users.index')
-                         ->with('success', 'User baru berhasil ditambahkan.');
->>>>>>> origin/main
-    }
-
-    public function confirmDelete($id)
-    {
-        $user = User::findOrFail($id);
-
-        if ($user->id !== auth()->id()) {
-            return redirect()->route('admin.users.index')
-                             ->with('error', 'Anda tidak dapat mengakses halaman ini.');
-        }
-
-        return view('admin.users.confirm-delete', compact('user'));
-    }
-
-    public function destroySelf(Request $request, $id)
-    {
-        $user = User::findOrFail($id);
-
-        if ($user->id !== auth()->id()) {
-            return redirect()->route('admin.users.index')
-                             ->with('error', 'Unauthorized action.');
-        }
-
-        $request->validate([
-            'password'     => 'required|string',
-            'confirmation' => 'required|in:DELETE',
-        ], [
-            'confirmation.in' => 'Ketik "DELETE" untuk konfirmasi penghapusan akun.',
-        ]);
-
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->withErrors(['password' => 'Password yang Anda masukkan salah.']);
-        }
-
-        $name = $user->name;
-
-        $user->delete();
-
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login')
-                         ->with('success', "Akun {$name} berhasil dihapus.");
-    }
 
     public function create()
     {
         return view('admin.users.create');
     }
+
 
     public function store(Request $request)
     {

@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
-use App\Models\StoreBalance;
-use App\Models\StoreBalanceHistory;
 use Illuminate\Http\Request;
 
 class SellerOrderController extends Controller
@@ -15,7 +13,7 @@ class SellerOrderController extends Controller
         $storeId = auth()->user()->store->id;
 
         $orders = Transaction::where('store_id', $storeId)
-            ->with('buyer')
+            ->with(['buyer', 'details.product'])
             ->latest()
             ->get();
 
@@ -40,46 +38,49 @@ class SellerOrderController extends Controller
             'tracking_number' => 'nullable|string|max:255',
         ]);
 
-        $store = auth()->user()->store;
-        $storeId = $store->id;
+        $storeId = auth()->user()->store->id;
 
+        // ambil order
         $order = Transaction::where('store_id', $storeId)
+            ->with(['details.product', 'store.balance'])
             ->findOrFail($id);
 
-        // Update status & resi
+        // set shipping (seller)
         $order->shipping_type = $request->shipping_type;
         $order->tracking_number = $request->tracking_number;
 
-        // Jika pesanan selesai
+        // ---------------------------
+        //  UPDATE STATUS BUYER
+        // ---------------------------
+        if ($request->shipping_type === 'pending') {
+            $order->payment_status = 'paid'; // pembeli lihat "Diproses"
+        }
+
+        if ($request->shipping_type === 'shipped') {
+            $order->payment_status = 'shipped'; // pembeli lihat "Dikirim"
+        }
+
         if ($request->shipping_type === 'delivered') {
+            $order->payment_status = 'completed'; // pembeli lihat "Selesai"
 
-            // Tandai sudah dibayar
-            $order->payment_status = 'paid';
+            // Hitung uang yang masuk ke seller
+            $sellerTotal = $order->details->sum(fn($d) => $d->subtotal);
 
-            // ===============================
-            // MASUKKAN UANG KE STORE BALANCE
-            // ===============================
+            // Ambil atau buat saldo toko
+            $balance = $order->store->balance()->firstOrCreate(
+                ['store_id' => $order->store_id],
+                ['balance' => 0]
+            );
 
-            // 1. Ambil saldo toko
-            $balance = $store->balance;
+            // Tambah saldo
+            $balance->increment('balance', $sellerTotal);
 
-            // Jika balance record belum ada
-            if (!$balance) {
-                $balance = $store->balance()->create([
-                    'balance' => 0
-                ]);
-            }
-
-            // 2. Tambahkan uang
-            $balance->balance += $order->grand_total;
-            $balance->save();
-
-            // 3. Catat history
+            // Simpan riwayat saldo
             $balance->histories()->create([
-                'type' => 'credit',
+                'type' => 'income',
                 'reference_id' => $order->id,
                 'reference_type' => 'transaction',
-                'amount' => $order->grand_total,
+                'amount' => $sellerTotal,
                 'remarks' => 'Pemasukan dari pesanan #' . $order->id,
             ]);
         }
@@ -88,5 +89,4 @@ class SellerOrderController extends Controller
 
         return back()->with('success', 'Status pesanan berhasil diperbarui.');
     }
-
 }

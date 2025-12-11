@@ -25,13 +25,32 @@ class SellerProductController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'category' => 'required|exists:product_categories,id',
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string',
+            'condition' => 'required|in:new,used',
+            'price' => 'required|numeric|min:0',
+            'weight' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+        ]);
+
         $store = auth()->user()->store;
 
-        $product = Product::create([
+        // generate slug unik
+        $slug = \Str::slug($request->name);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Product::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        Product::create([
             'store_id' => $store->id,
             'product_category_id' => $request->category,
             'name' => $request->name,
-            'slug' => \Str::slug($request->name),
+            'slug' => $slug,
             'description' => $request->desc,
             'condition' => $request->condition,
             'price' => $request->price,
@@ -40,7 +59,7 @@ class SellerProductController extends Controller
             'sold' => 0,
         ]);
 
-        return redirect()->route('seller.product.index')
+        return redirect()->route('seller.products.index')
             ->with('success', 'Product created successfully.');
     }
 
@@ -54,6 +73,16 @@ class SellerProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'category' => 'required|exists:product_categories,id',
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string',
+            'condition' => 'required|in:new,used',
+            'price' => 'required|numeric|min:0',
+            'weight' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+        ]);
+
         $product = Product::findOrFail($id);
 
         $product->update([
@@ -67,7 +96,7 @@ class SellerProductController extends Controller
             'stock' => $request->stock,
         ]);
 
-        return redirect()->route('seller.product.index')
+        return redirect()->route('seller.products.index')
             ->with('success', 'Product updated successfully.');
     }
 

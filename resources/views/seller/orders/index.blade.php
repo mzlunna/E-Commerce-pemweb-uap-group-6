@@ -39,8 +39,9 @@
                     <td>{{ $order->created_at->format('d M Y') }}</td>
 
                     <td>
-                        <a href="{{ route('seller.orders.show', $order->id) }}" class="btn btn-secondary btn-sm">
-                            Detail
+                        <a href="{{ route('seller.orders.show', $order->id) }}"
+                           class="btn btn-secondary btn-sm">
+                           Detail
                         </a>
                     </td>
                 </tr>

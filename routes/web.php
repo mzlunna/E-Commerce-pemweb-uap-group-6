@@ -20,15 +20,7 @@ use App\Http\Controllers\Seller\SellerProductImageController;
 use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Seller\SellerBalanceController;
 use App\Http\Controllers\Seller\SellerWithdrawController;
-<<<<<<< HEAD
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminStoreController;
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\AdminOrderController;
-use App\Http\Controllers\Admin\AdminWithdrawalController;
-=======
 use App\Http\Controllers\Seller\SellerStoreController;
->>>>>>> origin/main
 
 // ADMIN
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -163,36 +155,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ADMIN ROUTES (UPDATED + FIXED)
     // ============================================
     Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
-<<<<<<< HEAD
-    
-    // Dashboard
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    
-    // Stores
-    Route::prefix('stores')->name('stores.')->group(function () {
-    Route::get('/', [AdminStoreController::class, 'index'])->name('index');
-    Route::get('/create', [AdminStoreController::class, 'create'])->name('create');
-    Route::post('/', [AdminStoreController::class, 'store'])->name('store');
-    Route::get('/{id}', [AdminStoreController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [AdminStoreController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AdminStoreController::class, 'update'])->name('update');
-    Route::post('/{id}/verify', [AdminStoreController::class, 'verify'])->name('verify');
-    Route::post('/{id}/reject', [AdminStoreController::class, 'reject'])->name('reject');
-    Route::delete('/{id}', [AdminStoreController::class, 'destroy'])->name('destroy');
-    Route::post('/{id}/restore', [AdminStoreController::class, 'restore'])->name('restore');
-    });
-
-    // Users (self-delete MUST be first)
-    Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
-    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
-    Route::get('/users/{id}/confirm-delete', [AdminUserController::class, 'confirmDelete'])->name('users.confirmDelete');
-    Route::delete('/users/{id}/destroy-self', [AdminUserController::class, 'destroySelf'])->name('users.destroySelf');
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
-    Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy'); 
-=======
 
         // Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -223,7 +185,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
->>>>>>> origin/main
     });
 
 });
